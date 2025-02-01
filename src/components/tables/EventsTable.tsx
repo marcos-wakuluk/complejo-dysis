@@ -16,7 +16,7 @@ interface Event {
 }
 
 export function EventsTable() {
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [events, setEvents] = useState<Event[]>([]);
@@ -49,9 +49,15 @@ export function EventsTable() {
     setIsModalOpen(true);
   };
 
-  const handleSave = (updatedEvent: Event) => {
-    // Aquí puedes agregar la lógica para guardar los cambios en la base de datos
-    console.log("Evento actualizado:", updatedEvent);
+  const handleSave = async (updatedEvent: Event) => {
+    await fetch("/api/events", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedEvent),
+    });
+
     setIsModalOpen(false);
   };
 

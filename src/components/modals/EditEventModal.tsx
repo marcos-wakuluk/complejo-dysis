@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal, TextInput, Textarea, Button, Group } from "@mantine/core";
-import { useForm } from "@mantine/form";
 
 interface InputChangeEvent {
   target: {
@@ -37,46 +36,13 @@ interface EditEventModalProps {
 export function EditEventModal({ event, isOpen, onClose, onSave }: EditEventModalProps) {
   const [updatedEvent, setUpdatedEvent] = useState(event);
 
-  const form = useForm({
-    initialValues: {
-      name: event.name,
-      description: event.description,
-      date: new Date(event.date).toISOString().split("T")[0],
-      startTime: event.startTime,
-      numberOfPeople: event.numberOfPeople,
-      peopleEntered: event.peopleEntered,
-      ticketsSold: event.ticketsSold,
-      status: event.status,
-    },
-    validate: {
-      date: (value) => (new Date(value) < new Date() ? "La fecha no puede ser en el pasado" : null),
-      startTime: (value) => (/^([01]\d|2[0-3]):([0-5]\d)$/.test(value) ? null : "Hora inválida"),
-    },
-  });
-
-  useEffect(() => {
-    form.setValues({
-      name: event.name,
-      description: event.description,
-      date: new Date(event.date).toISOString().split("T")[0],
-      startTime: event.startTime,
-      numberOfPeople: event.numberOfPeople,
-      peopleEntered: event.peopleEntered,
-      ticketsSold: event.ticketsSold,
-      status: event.status,
-    });
-  }, [event, form]);
-
   const handleInputChange = (e: InputChangeEvent) => {
     const { name, value } = e.target;
     setUpdatedEvent({ ...updatedEvent, [name]: value });
   };
 
   const handleSave = () => {
-    if (form.validate().hasErrors) {
-      return;
-    }
-    onSave(form.values);
+    onSave(updatedEvent);
     onClose();
   };
 
