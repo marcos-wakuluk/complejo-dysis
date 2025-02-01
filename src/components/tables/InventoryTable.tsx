@@ -126,11 +126,11 @@ export function InventoryTable() {
     </Table.Tr>
   ));
 
+  const totalRecords = inventory.length;
+
   if (loading) {
     return <Loading />;
   }
-
-  const totalRecords = inventory.length;
 
   return (
     <>
@@ -169,6 +169,7 @@ export function InventoryTable() {
           Total: {totalRecords} items
         </Text>
       </Flex>
+
       {selectedItem && (
         <EditInventoryModal
           isOpen={isEditModalOpen}

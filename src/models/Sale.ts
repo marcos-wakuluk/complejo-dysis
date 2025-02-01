@@ -1,23 +1,49 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const saleSchema = new mongoose.Schema({
-  code: { type: String, required: true, unique: true },
-  date: { type: Date, required: true },
-  total: { type: String, required: true }, // Keeping as string due to currency format
-  status: {
-    type: String,
-    enum: ['pendiente', 'confirmada'],
-    default: 'pendiente'
+const saleSchema = new mongoose.Schema(
+  {
+    code: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    date: {
+      type: Date,
+      required: true,
+    },
+    total: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["pendiente", "confirmada"],
+      default: "pendiente",
+    },
+    cashier: {
+      type: String,
+      required: true,
+    },
+    paymentMethod: {
+      type: String,
+      required: true,
+    },
+    transactionNumber: {
+      type: String,
+      default: "N/A",
+    },
+    details: {
+      type: String,
+      required: true,
+    },
   },
-  cashier: { type: String, required: true }, // "Cajero" in Spanish
-  paymentMethod: { type: String, required: true }, // "Metodo de Pago" in Spanish
-  transactionNumber: { type: String, default: 'N/A' }, // "Nro. Transacción" in Spanish
-  details: { type: String, required: true }
-}, {
-  timestamps: true,
-  versionKey: false
-});
+  {
+    timestamps: true,
+    versionKey: false,
+    collection: "sales",
+  }
+);
 
-const Sale = mongoose.models.Sale || mongoose.model('Sale', saleSchema);
+const Sale = mongoose.models.Sale || mongoose.model("Sale", saleSchema);
 
 export default Sale;
