@@ -3,21 +3,14 @@
 import { useEffect, useState } from "react";
 import { Table, Button, Group, Badge } from "@mantine/core";
 import { EditEventModal } from "@/components/modals/EditEventModal";
-
-interface Event {
-  name: string;
-  description: string;
-  date: string;
-  startTime: string;
-  numberOfPeople: number;
-  peopleEntered: number;
-  ticketsSold: number;
-  status: string;
-}
+import { DeleteEventModal } from "../modals/DeleteEventModal";
+import { IconEdit, IconTrash, IconTicket } from "@tabler/icons-react";
+import { Event } from "@/types/Events";
 
 export function EventsTable() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [events, setEvents] = useState<Event[]>([]);
 
@@ -61,11 +54,32 @@ export function EventsTable() {
     setIsModalOpen(false);
   };
 
+  const handleDeleteClick = (event: Event) => {
+    setSelectedEvent(event);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (selectedEvent) {
+      await fetch("/api/events", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _id: selectedEvent._id }),
+      });
+      fetchEvents();
+      setIsDeleteModalOpen(false);
+    }
+  };
+
   const rows = events.map((event) => (
     <Table.Tr key={`${event.name}-${event.date}`}>
       <Table.Td>{event.name}</Table.Td>
       <Table.Td>{event.description}</Table.Td>
-      <Table.Td>{new Date(event.date).toLocaleDateString()}</Table.Td>
+      <Table.Td>
+        {new Date(event.date).toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "2-digit" })}
+      </Table.Td>
       <Table.Td>{event.startTime}</Table.Td>
       <Table.Td>{event.numberOfPeople}</Table.Td>
       <Table.Td>{event.peopleEntered}</Table.Td>
@@ -76,10 +90,13 @@ export function EventsTable() {
       <Table.Td>
         <Group>
           <Button size="xs" variant="outline" onClick={() => handleEditClick(event)}>
-            Edit
+            <IconEdit size={16} />
+          </Button>
+          <Button color="red" variant="outline" onClick={() => handleDeleteClick(event)}>
+            <IconTrash size={16} />
           </Button>
           <Button size="xs" variant="outline" color="blue">
-            View Tickets
+            <IconTicket size={16} />
           </Button>
         </Group>
       </Table.Td>
@@ -111,6 +128,15 @@ export function EventsTable() {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSave}
+        />
+      )}
+
+      {selectedEvent && (
+        <DeleteEventModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleDelete}
+          eventName={selectedEvent.name}
         />
       )}
     </>

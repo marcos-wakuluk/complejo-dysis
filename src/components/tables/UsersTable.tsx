@@ -288,7 +288,7 @@ export function UsersTable() {
               <Table.Th>
                 Acciones{" "}
                 <Button size="xs" color="blue" variant="transparent" p={0} w={30} h={30} ml={15} onClick={() => {}}>
-                  <IconRefresh size={15} stroke={1.5} onClick={() => {}} />
+                  <IconRefresh size={15} stroke={1.5} onClick={() => fetchUsers()} />
                 </Button>
               </Table.Th>
             </Table.Tr>

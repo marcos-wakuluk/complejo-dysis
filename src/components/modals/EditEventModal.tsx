@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Modal, TextInput, Textarea, Button, Group } from "@mantine/core";
+import { Event } from "@/types/Events";
 
 interface InputChangeEvent {
   target: {
@@ -9,28 +10,10 @@ interface InputChangeEvent {
 }
 
 interface EditEventModalProps {
-  readonly event: {
-    name: string;
-    description: string;
-    date: string;
-    startTime: string;
-    numberOfPeople: number;
-    peopleEntered: number;
-    ticketsSold: number;
-    status: string;
-  };
+  readonly event: Event;
   readonly isOpen: boolean;
   readonly onClose: () => void;
-  readonly onSave: (updatedEvent: {
-    name: string;
-    description: string;
-    date: string;
-    startTime: string;
-    numberOfPeople: number;
-    peopleEntered: number;
-    ticketsSold: number;
-    status: string;
-  }) => void;
+  readonly onSave: (updatedEvent: Event) => void;
 }
 
 export function EditEventModal({ event, isOpen, onClose, onSave }: EditEventModalProps) {
@@ -60,7 +43,11 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditEventModa
           <TextInput
             label="Fecha"
             name="date"
-            value={new Date(updatedEvent.date).toISOString().split("T")[0]}
+            value={new Date(event.date).toLocaleDateString("es-ES", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            })}
             onChange={handleInputChange}
           />
           <TextInput label="Inicio" name="startTime" value={updatedEvent.startTime} onChange={handleInputChange} />
