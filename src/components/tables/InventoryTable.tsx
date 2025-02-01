@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Table, Button, Group, Badge } from "@mantine/core";
+import { Table, Button, Group, Badge, Select, Pagination, Text, Flex } from "@mantine/core";
 import { IconEdit, IconAdjustments, IconTrash } from "@tabler/icons-react";
 import { InventoryItem } from "@/types/InventoryItem";
 import { Loading } from "@/components/Loading";
 import { EditInventoryModal } from "@/components/modals/EditInventoryModal";
 import { DeleteInventoryModal } from "@/components/modals/DeleteInventoryModal";
+import { EditStockModal } from "@/components/modals/EditStockModal";
 
 export function InventoryTable() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -14,6 +15,9 @@ export function InventoryTable() {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditStockModalOpen, setIsEditStockModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const fetchInventory = async () => {
     const response = await fetch("/api/inventory");
@@ -40,6 +44,8 @@ export function InventoryTable() {
       body: JSON.stringify(updatedItem),
     });
     fetchInventory();
+    setIsEditModalOpen(false);
+    setSelectedItem(null);
   };
 
   const handleDeleteClick = (item: InventoryItem) => {
@@ -58,60 +64,118 @@ export function InventoryTable() {
       });
       fetchInventory();
       setIsDeleteModalOpen(false);
+      setSelectedItem(null);
     }
   };
 
-  const rows = inventory.map((item) => (
-    <tr key={item.name}>
-      <td>{item.name}</td>
-      <td>{item.description ?? "-"}</td>
-      <td style={{ textTransform: "capitalize" }}>{item.category}</td>
-      <td>{item.quantity}</td>
-      <td>{item.price}</td>
-      <td>
+  const handleEditStockClick = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setIsEditStockModalOpen(true);
+  };
+
+  const handleSaveStock = async (updatedItem: InventoryItem) => {
+    await fetch("/api/inventory", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedItem),
+    });
+    fetchInventory();
+    setIsEditStockModalOpen(false);
+    setSelectedItem(null);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleRowsPerPageChange = (value: string | null) => {
+    if (value !== null) {
+      setRowsPerPage(parseInt(value, 10));
+      setCurrentPage(1);
+    }
+  };
+
+  const paginatedInventory = inventory.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const rows = paginatedInventory.map((item, index) => (
+    <Table.Tr key={item.name}>
+      <Table.Td>{(currentPage - 1) * rowsPerPage + index + 1}</Table.Td>
+      <Table.Td>{item.name}</Table.Td>
+      <Table.Td>{item.description ?? "-"}</Table.Td>
+      <Table.Td style={{ textTransform: "capitalize" }}>{item.category}</Table.Td>
+      <Table.Td>{item.quantity}</Table.Td>
+      <Table.Td>{item.price}</Table.Td>
+      <Table.Td>
         <Badge color={item.status === "activo" ? "green" : "red"}>{item.status}</Badge>
-      </td>
-      <td>
+      </Table.Td>
+      <Table.Td>
         <Group>
           <Button size="xs" variant="outline" onClick={() => handleEditClick(item)}>
             <IconEdit size={16} />
           </Button>
-          <Button size="xs" variant="outline" color="yellow">
+          <Button size="xs" variant="outline" color="yellow" onClick={() => handleEditStockClick(item)}>
             <IconAdjustments size={16} />
           </Button>
           <Button size="xs" variant="outline" color="red" onClick={() => handleDeleteClick(item)}>
             <IconTrash size={16} />
           </Button>
         </Group>
-      </td>
-    </tr>
+      </Table.Td>
+    </Table.Tr>
   ));
 
   if (loading) {
     return <Loading />;
   }
 
+  const totalRecords = inventory.length;
+
   return (
     <>
-      <Table striped highlightOnHover>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Categoría</th>
-            <th>Cantidad</th>
-            <th>Precio</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
-
+      <div style={{ maxHeight: "496px", overflow: "auto" }}>
+        <Table striped highlightOnHover stickyHeader>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>#</Table.Th>
+              <Table.Th>Nombre</Table.Th>
+              <Table.Th>Descripción</Table.Th>
+              <Table.Th>Categoría</Table.Th>
+              <Table.Th>Cantidad</Table.Th>
+              <Table.Th>Precio</Table.Th>
+              <Table.Th>Estado</Table.Th>
+              <Table.Th>Acciones</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </div>
+      <Flex justify="space-between" align="center" mt={10}>
+        <Select
+          label="Items por página"
+          value={rowsPerPage.toString()}
+          onChange={handleRowsPerPageChange}
+          data={["5", "10", "20", "50"]}
+          style={{ marginBottom: "1rem" }}
+        />
+        <Pagination
+          total={Math.ceil(inventory.length / rowsPerPage)}
+          value={currentPage}
+          onChange={handlePageChange}
+          style={{ marginTop: "1rem" }}
+        />
+        <Text size="sm" c="dimmed">
+          Total: {totalRecords} items
+        </Text>
+      </Flex>
       {selectedItem && (
         <EditInventoryModal
           isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setSelectedItem(null);
+          }}
           onSave={handleSave}
           item={selectedItem}
         />
@@ -120,9 +184,24 @@ export function InventoryTable() {
       {selectedItem && (
         <DeleteInventoryModal
           isOpen={isDeleteModalOpen}
-          onClose={() => setIsDeleteModalOpen(false)}
+          onClose={() => {
+            setIsDeleteModalOpen(false);
+            setSelectedItem(null);
+          }}
           onConfirm={handleDelete}
           itemName={selectedItem.name}
+        />
+      )}
+
+      {selectedItem && (
+        <EditStockModal
+          isOpen={isEditStockModalOpen}
+          onClose={() => {
+            setIsEditStockModalOpen(false);
+            setSelectedItem(null);
+          }}
+          onSave={handleSaveStock}
+          item={selectedItem}
         />
       )}
     </>
