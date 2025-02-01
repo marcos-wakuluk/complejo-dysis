@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Modal, TextInput, Textarea, Button, Group } from "@mantine/core";
-import { Event } from "@/types/Events";
+import { Event } from "@/types/Event";
 
 interface InputChangeEvent {
   target: {

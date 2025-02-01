@@ -5,12 +5,14 @@ import { Table, Button, Group, Badge } from "@mantine/core";
 import { EditEventModal } from "@/components/modals/EditEventModal";
 import { DeleteEventModal } from "../modals/DeleteEventModal";
 import { IconEdit, IconTrash, IconTicket } from "@tabler/icons-react";
-import { Event } from "@/types/Events";
+import { Event } from "@/types/Event";
+import { Loading } from "../Loading";
 
 export function EventsTable() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [events, setEvents] = useState<Event[]>([]);
 
@@ -18,6 +20,7 @@ export function EventsTable() {
     const response = await fetch("/api/events");
     const data = await response.json();
     setEvents(data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -102,6 +105,10 @@ export function EventsTable() {
       </Table.Td>
     </Table.Tr>
   ));
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>

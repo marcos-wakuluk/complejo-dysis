@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Table, Button, Group, Badge, Select, Pagination, Flex, Text, Loader, Center } from "@mantine/core";
+import { Table, Button, Group, Badge, Select, Pagination, Flex, Text } from "@mantine/core";
 import { IconEdit, IconTrash, IconChevronDown, IconChevronUp, IconSelector, IconRefresh } from "@tabler/icons-react";
 import { EditUserModal } from "../modals/EditUserModal";
 import { DeleteUserModal } from "../modals/DeleteUserModal";
 import { User } from "../../types/User";
+import { Loading } from "../Loading";
 
 export function UsersTable() {
   const [page, setPage] = useState(1);
@@ -151,11 +152,7 @@ export function UsersTable() {
   ));
 
   if (loading) {
-    return (
-      <Center style={{ height: "531px" }}>
-        <Loader />
-      </Center>
-    );
+    return <Loading />;
   }
 
   return (
