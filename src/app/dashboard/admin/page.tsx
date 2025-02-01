@@ -18,8 +18,8 @@ export default function AdminDashboard() {
         Complejo Dysis - Administrador
       </Title>
 
-      <Tabs value={activeTab} onChange={setActiveTab}>
-        <Tabs.List>
+      <Tabs value={activeTab} onChange={setActiveTab} style={{ fontWeight: "bold" }}>
+        <Tabs.List grow>
           <Tabs.Tab value="users" leftSection={<IconUsers size="1rem" />}>
             Usuarios
           </Tabs.Tab>
