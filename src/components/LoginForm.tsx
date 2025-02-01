@@ -1,6 +1,6 @@
 "use client";
 
-import { TextInput, PasswordInput, Paper, Title, Container, Button, Stack, Center } from "@mantine/core";
+import { TextInput, PasswordInput, Paper, Title, Container, Button, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -37,7 +37,6 @@ export function LoginForm() {
       });
 
       const data = await response.json();
-      console.log("🚀 ~ handleSubmit ~ data:", data);
 
       if (response.ok) {
         switch (data.user.role) {
@@ -62,9 +61,9 @@ export function LoginForm() {
   };
 
   return (
-    <Center>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       <Container size={420} my={40}>
-        <Title ta="center">Welcome back!</Title>
+        <Title ta="center">Bienvenido a Complejo Dysis</Title>
 
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
           <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -85,6 +84,6 @@ export function LoginForm() {
           </form>
         </Paper>
       </Container>
-    </Center>
+    </div>
   );
 }

@@ -1,13 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Table, Button, Group, Badge } from "@mantine/core";
-import { Events } from "@/utils/constants";
 import { EditEventModal } from "@/components/modals/EditEventModal";
+
+interface Event {
+  name: string;
+  description: string;
+  date: string;
+  startTime: string;
+  numberOfPeople: number;
+  peopleEntered: number;
+  ticketsSold: number;
+  status: string;
+}
 
 export function EventsTable() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [events, setEvents] = useState<Event[]>([]);
+
+  const fetchEvents = async () => {
+    const response = await fetch("/api/events");
+    const data = await response.json();
+    setEvents(data);
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -22,18 +44,18 @@ export function EventsTable() {
     }
   };
 
-  const handleEditClick = (event) => {
+  const handleEditClick = (event: Event) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
   };
 
-  const handleSave = (updatedEvent) => {
+  const handleSave = (updatedEvent: Event) => {
     // Aquí puedes agregar la lógica para guardar los cambios en la base de datos
     console.log("Evento actualizado:", updatedEvent);
     setIsModalOpen(false);
   };
 
-  const rows = Events.map((event) => (
+  const rows = events.map((event) => (
     <Table.Tr key={`${event.name}-${event.date}`}>
       <Table.Td>{event.name}</Table.Td>
       <Table.Td>{event.description}</Table.Td>
