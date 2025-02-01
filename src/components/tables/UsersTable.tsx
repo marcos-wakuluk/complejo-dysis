@@ -28,6 +28,7 @@ export function UsersTable() {
   }, []);
 
   const fetchUsers = async () => {
+    setLoading(true);
     try {
       const response = await fetch("/api/users");
       const data = await response.json();
@@ -221,7 +222,7 @@ export function UsersTable() {
                 }}
                 style={{ cursor: "pointer" }}
               >
-                <Group justify="space-between">
+                <Group>
                   <span>Email</span>
                   {sortBy === "email" ? (
                     sortDirection === "asc" ? (

@@ -17,7 +17,7 @@ export function InventoryTable() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditStockModalOpen, setIsEditStockModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(20);
 
   const fetchInventory = async () => {
     const response = await fetch("/api/inventory");

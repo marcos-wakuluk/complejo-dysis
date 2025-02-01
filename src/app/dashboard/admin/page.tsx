@@ -14,8 +14,8 @@ export default function AdminDashboard() {
 
   return (
     <Container size="xl">
-      <Title order={2} mb="xl">
-        Panel de Administrador
+      <Title order={2} style={titleStyle} mt="sm">
+        Complejo Dysis - Administrador
       </Title>
 
       <Tabs value={activeTab} onChange={setActiveTab}>
@@ -60,3 +60,12 @@ export default function AdminDashboard() {
     </Container>
   );
 }
+
+const titleStyle = {
+  fontSize: "2rem",
+  color: "#00bfff",
+  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
+  marginBottom: "1.5rem",
+  fontFamily: "Arial Black",
+  justifySelf: "center",
+};
