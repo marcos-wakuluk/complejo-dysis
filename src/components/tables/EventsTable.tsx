@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 import { Table, Button, Group, Badge } from "@mantine/core";
 import { EditEventModal } from "@/components/modals/EditEventModal";
 import { DeleteEventModal } from "../modals/DeleteEventModal";
-import { IconEdit, IconTrash, IconTicket } from "@tabler/icons-react";
+import { IconEdit, IconTrash, IconTicket, IconPlus } from "@tabler/icons-react";
 import { Event } from "@/types/Event";
 import LoadingAnimation from "../LoadingAnimation";
+import CreateEventModal from "../modals/CreateEventModal";
 
 export function EventsTable() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const [events, setEvents] = useState<Event[]>([]);
 
@@ -112,6 +114,11 @@ export function EventsTable() {
 
   return (
     <>
+      <Group justify="right" mr="xl">
+        <Button onClick={() => setIsCreateModalOpen(true)}>
+          <IconPlus size={16} /> Nuevo evento
+        </Button>
+      </Group>
       <Table striped highlightOnHover>
         <Table.Thead>
           <Table.Tr>
@@ -145,6 +152,10 @@ export function EventsTable() {
           onConfirm={handleDelete}
           eventName={selectedEvent.name}
         />
+      )}
+
+      {isCreateModalOpen && (
+        <CreateEventModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onSave={handleSave} />
       )}
     </>
   );

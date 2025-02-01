@@ -20,16 +20,23 @@ export async function PUT(req: Request) {
     await connectDB();
 
     const body = await req.json();
-    const updatedEvent = await Event.findByIdAndUpdate(body._id, body, { new: true });
+    let updatedEvent;
 
-    if (!updatedEvent) {
-      return NextResponse.json({ error: "Event not found" }, { status: 404 });
+    if (body._id) {
+      updatedEvent = await Event.findByIdAndUpdate(body._id, body, { new: true });
+
+      if (!updatedEvent) {
+        return NextResponse.json({ error: "Event not found" }, { status: 404 });
+      }
+    } else {
+      updatedEvent = new Event(body);
+      await updatedEvent.save();
     }
 
     return NextResponse.json(updatedEvent);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to update event" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to update or create event" }, { status: 500 });
   }
 }
 
