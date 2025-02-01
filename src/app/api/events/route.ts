@@ -57,7 +57,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ message: "Event deleted successfully" });
+    return NextResponse.json(deletedEvent);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Failed to delete event" }, { status: 500 });
