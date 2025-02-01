@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Table, Button, Badge, Flex, Select, Pagination, Text } from "@mantine/core";
 import { Sale } from "@/types/Sale";
-import { Loading } from "../Loading";
+import LoadingAnimation from "../LoadingAnimation";
 
 export function SalesTable() {
   const [sales, setSales] = useState<Sale[]>([]);
@@ -69,7 +69,7 @@ export function SalesTable() {
   const totalRecords = sales.length;
 
   if (loading) {
-    return <Loading />;
+    return <LoadingAnimation />;
   }
 
   return (

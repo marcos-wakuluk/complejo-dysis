@@ -6,7 +6,7 @@ import { IconEdit, IconTrash, IconChevronDown, IconChevronUp, IconSelector, Icon
 import { EditUserModal } from "../modals/EditUserModal";
 import { DeleteUserModal } from "../modals/DeleteUserModal";
 import { User } from "../../types/User";
-import { Loading } from "../Loading";
+import LoadingAnimation from "../LoadingAnimation";
 
 export function UsersTable() {
   const [page, setPage] = useState(1);
@@ -153,7 +153,7 @@ export function UsersTable() {
   ));
 
   if (loading) {
-    return <Loading />;
+    return <LoadingAnimation />;
   }
 
   return (

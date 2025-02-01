@@ -4,6 +4,7 @@ import { TextInput, PasswordInput, Paper, Title, Container, Button, Stack } from
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import LoadingAnimation from "./LoadingAnimation";
 
 interface LoginFormValues {
   email: string;
@@ -55,10 +56,12 @@ export function LoginForm() {
     } catch (error) {
       console.error("Login error", error);
       alert("An error occurred during login");
-    } finally {
-      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <LoadingAnimation />;
+  }
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>

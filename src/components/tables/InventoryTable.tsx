@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { Table, Button, Group, Badge, Select, Pagination, Text, Flex } from "@mantine/core";
 import { IconEdit, IconAdjustments, IconTrash } from "@tabler/icons-react";
 import { InventoryItem } from "@/types/InventoryItem";
-import { Loading } from "@/components/Loading";
 import { EditInventoryModal } from "@/components/modals/EditInventoryModal";
 import { DeleteInventoryModal } from "@/components/modals/DeleteInventoryModal";
 import { EditStockModal } from "@/components/modals/EditStockModal";
+import LoadingAnimation from "../LoadingAnimation";
 
 export function InventoryTable() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -129,7 +129,7 @@ export function InventoryTable() {
   const totalRecords = inventory.length;
 
   if (loading) {
-    return <Loading />;
+    return <LoadingAnimation />;
   }
 
   return (
