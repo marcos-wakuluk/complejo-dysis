@@ -2,21 +2,6 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Inventory from "@/models/Inventory";
 
-export async function handler(req: Request) {
-  switch (req.method) {
-    case "GET":
-      return GET();
-    case "POST":
-      return POST(req);
-    case "PUT":
-      return PUT(req);
-    case "DELETE":
-      return DELETE(req);
-    default:
-      return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
-  }
-}
-
 export async function GET() {
   try {
     await connectDB();

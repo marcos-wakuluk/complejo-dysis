@@ -6,24 +6,14 @@ if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
 }
 
-let cached = global.mongoose;
-
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
-
 async function connectDB() {
-  if (cached.conn) {
-    return cached.conn;
+  try {
+    await mongoose.connect(MONGODB_URI as string);
+    console.log("MongoDB connected successfully.");
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+    throw new Error("Could not connect to MongoDB.");
   }
-
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => {
-      return mongoose;
-    });
-  }
-  cached.conn = await cached.promise;
-  return cached.conn;
 }
 
 export default connectDB;
