@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { Table, Button, Group, Badge, Select, Pagination, Flex, Text } from "@mantine/core";
-import { IconEdit, IconTrash, IconChevronDown, IconChevronUp, IconSelector, IconRefresh } from "@tabler/icons-react";
+import { IconEdit, IconTrash, IconChevronDown, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { EditUserModal } from "../modals/EditUserModal";
 import { DeleteUserModal } from "../modals/DeleteUserModal";
 import { User } from "../../types/User";
-import LoadingAnimation from "../LoadingAnimation";
+import { Loading } from "../Loading";
 
 export function UsersTable() {
   const [page, setPage] = useState(1);
@@ -21,16 +21,17 @@ export function UsersTable() {
   const [loading, setLoading] = useState(true);
 
   const totalRecords = users.length;
-  const totalPages = Math.ceil(totalRecords / parseInt(rowsPerPage));
+  const totalPages = useMemo(() => Math.ceil(totalRecords / parseInt(rowsPerPage)), [totalRecords, rowsPerPage]);
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, rowsPerPage]);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/users");
+      const response = await fetch(`/api/users?page=${page}&limit=${rowsPerPage}`);
       const data = await response.json();
 
       setUsers(data);
@@ -39,7 +40,7 @@ export function UsersTable() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, rowsPerPage]);
 
   const sortedData = [...users].sort((a, b) => {
     if (!sortBy) return 0;
@@ -153,7 +154,7 @@ export function UsersTable() {
   ));
 
   if (loading) {
-    return <LoadingAnimation />;
+    return <Loading />;
   }
 
   return (
@@ -283,12 +284,7 @@ export function UsersTable() {
                   )}
                 </Group>
               </Table.Th>
-              <Table.Th>
-                Acciones{" "}
-                <Button size="xs" color="blue" variant="transparent" p={0} w={30} h={30} ml={15} onClick={() => {}}>
-                  <IconRefresh size={15} stroke={1.5} onClick={() => fetchUsers()} />
-                </Button>
-              </Table.Th>
+              <Table.Th>Acciones</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
@@ -306,7 +302,6 @@ export function UsersTable() {
             { value: "10", label: "10 per page" },
             { value: "20", label: "20 per page" },
             { value: "50", label: "50 per page" },
-            { value: "100", label: "100 per page" },
           ]}
           style={{ width: 130 }}
         />

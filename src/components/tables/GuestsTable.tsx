@@ -2,11 +2,11 @@
 
 import { Table, Button, Group, Badge /* Avatar */, Pagination, Text, Flex, Select } from "@mantine/core";
 import { IconEdit, IconTrash, IconCheck } from "@tabler/icons-react";
-import LoadingAnimation from "../LoadingAnimation";
 import { useEffect, useState } from "react";
 import { Guest } from "@/types/Guest";
 import EditGuestModal from "../modals/EditGuestModal";
 import DeleteGuestModal from "../modals/DeleteGuestModal";
+import { Loading } from "../Loading";
 
 export function GuestsTable() {
   const [guest, setGuest] = useState<Guest[]>([]);
@@ -122,7 +122,7 @@ export function GuestsTable() {
   ));
 
   if (loading) {
-    return <LoadingAnimation />;
+    return <Loading />;
   }
 
   return (

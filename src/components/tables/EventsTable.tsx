@@ -6,8 +6,8 @@ import { EditEventModal } from "@/components/modals/EditEventModal";
 import { DeleteEventModal } from "../modals/DeleteEventModal";
 import { IconEdit, IconTrash, IconTicket, IconPlus } from "@tabler/icons-react";
 import { Event } from "@/types/Event";
-import LoadingAnimation from "../LoadingAnimation";
 import CreateEventModal from "../modals/CreateEventModal";
+import { Loading } from "../Loading";
 
 export function EventsTable() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -109,7 +109,7 @@ export function EventsTable() {
   ));
 
   if (loading) {
-    return <LoadingAnimation />;
+    return <Loading />;
   }
 
   return (
