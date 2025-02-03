@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Container, Tabs, Title } from "@mantine/core";
+import { Container, Tabs } from "@mantine/core";
 import { IconUsers, IconCalendarEvent, IconTicket, IconBox, IconCash } from "@tabler/icons-react";
 import { UsersTable } from "@/components/tables/UsersTable";
 import { EventsTable } from "@/components/tables/EventsTable";
@@ -14,10 +14,6 @@ export default function AdminDashboard() {
 
   return (
     <Container size="xl">
-      <Title order={2} style={titleStyle} mt="sm">
-        Complejo Dysis - Administrador
-      </Title>
-
       <Tabs value={activeTab} onChange={setActiveTab} style={{ fontWeight: "bold" }}>
         <Tabs.List grow>
           <Tabs.Tab value="users" leftSection={<IconUsers size="1rem" />}>
@@ -60,12 +56,3 @@ export default function AdminDashboard() {
     </Container>
   );
 }
-
-const titleStyle = {
-  fontSize: "2rem",
-  color: "#00bfff",
-  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
-  marginBottom: "1.5rem",
-  fontFamily: "Arial Black",
-  justifySelf: "center",
-};

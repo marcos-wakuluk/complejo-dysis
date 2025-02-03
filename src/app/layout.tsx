@@ -1,22 +1,22 @@
-import type { Metadata } from "next";
+"use client";
+
 import "./globals.css";
 import { ColorSchemeScript } from "@mantine/core";
-
-export const metadata: Metadata = {
-  title: "Complejo Dysis",
-  description: "Complejo Dysis",
-};
-
+import { usePathname } from "next/navigation";
+import { CommonLayout } from "@/components/layouts/CommonLayout";
 import { Providers } from "./providers";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const pathname = usePathname();
+  const isLoginPage = pathname === "/";
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <ColorSchemeScript defaultColorScheme="dark" />
       </head>
-      <body suppressHydrationWarning>
-        <Providers>{children}</Providers>
+      <body>
+        <Providers>{isLoginPage ? children : <CommonLayout>{children}</CommonLayout>}</Providers>
       </body>
     </html>
   );
