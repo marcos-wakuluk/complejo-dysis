@@ -1,9 +1,10 @@
 "use client";
 
-import { TextInput, PasswordInput, Paper, Title, Container, Button, Stack } from "@mantine/core";
-import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
+import { TextInput, PasswordInput, Paper, Title, Container, Button, Stack } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import LoadingAnimation from "./LoadingAnimation";
 
 interface LoginFormValues {
@@ -14,6 +15,7 @@ interface LoginFormValues {
 export function LoginForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<LoginFormValues>({
     initialValues: {
@@ -40,7 +42,9 @@ export function LoginForm() {
       const data = await response.json();
 
       if (response.ok) {
-        switch (data.user.role) {
+        const decodedToken = jwtDecode<{ role: string }>(data.token);
+
+        switch (decodedToken.role) {
           case "admin":
             router.push("/dashboard/admin");
             break;
@@ -51,11 +55,11 @@ export function LoginForm() {
             alert("Unknown role");
         }
       } else {
-        alert(data.message || "Invalid email or password");
+        setError(data.message || "Invalid email or password");
       }
     } catch (error) {
       console.error("Login error", error);
-      alert("An error occurred during login");
+      setError("An error occurred during login");
     }
   };
 
@@ -71,19 +75,15 @@ export function LoginForm() {
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
           <form onSubmit={form.onSubmit(handleSubmit)}>
             <Stack>
-              <TextInput label="Email" placeholder="your@email.com" required {...form.getInputProps("email")} />
+              <TextInput label="Email" required {...form.getInputProps("email")} />
 
-              <PasswordInput
-                label="Password"
-                placeholder="Your password"
-                required
-                {...form.getInputProps("password")}
-              />
+              <PasswordInput label="Password" required {...form.getInputProps("password")} />
 
               <Button type="submit" loading={loading}>
-                Sign in
+                Iniciar sesión
               </Button>
             </Stack>
+            {error && <div className="error-message">{error}</div>}
           </form>
         </Paper>
       </Container>
