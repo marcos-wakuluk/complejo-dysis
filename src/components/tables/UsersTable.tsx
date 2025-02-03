@@ -157,6 +157,15 @@ export function UsersTable() {
     return <Loading />;
   }
 
+  const handleSort = (field: keyof User) => {
+    if (sortBy === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortDirection("asc");
+    }
+  };
+
   return (
     <>
       <div style={{ maxHeight: "496px", overflow: "auto" }}>
@@ -164,17 +173,7 @@ export function UsersTable() {
           <Table.Thead>
             <Table.Tr>
               <Table.Th>#</Table.Th>
-              <Table.Th
-                onClick={() => {
-                  if (sortBy === "name") {
-                    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-                  } else {
-                    setSortBy("name");
-                    setSortDirection("asc");
-                  }
-                }}
-                style={{ cursor: "pointer" }}
-              >
+              <Table.Th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
                 <Group>
                   <span>Nombre</span>
                   {sortBy === "name" ? (
@@ -188,17 +187,7 @@ export function UsersTable() {
                   )}
                 </Group>
               </Table.Th>
-              <Table.Th
-                onClick={() => {
-                  if (sortBy === "lastname") {
-                    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-                  } else {
-                    setSortBy("lastname");
-                    setSortDirection("asc");
-                  }
-                }}
-                style={{ cursor: "pointer" }}
-              >
+              <Table.Th onClick={() => handleSort("lastname")} style={{ cursor: "pointer" }}>
                 <Group>
                   <span>Apellido</span>
                   {sortBy === "lastname" ? (
@@ -212,17 +201,7 @@ export function UsersTable() {
                   )}
                 </Group>
               </Table.Th>
-              <Table.Th
-                onClick={() => {
-                  if (sortBy === "email") {
-                    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-                  } else {
-                    setSortBy("email");
-                    setSortDirection("asc");
-                  }
-                }}
-                style={{ cursor: "pointer" }}
-              >
+              <Table.Th onClick={() => handleSort("email")} style={{ cursor: "pointer" }}>
                 <Group>
                   <span>Email</span>
                   {sortBy === "email" ? (
@@ -236,17 +215,7 @@ export function UsersTable() {
                   )}
                 </Group>
               </Table.Th>
-              <Table.Th
-                onClick={() => {
-                  if (sortBy === "phone") {
-                    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-                  } else {
-                    setSortBy("phone");
-                    setSortDirection("asc");
-                  }
-                }}
-                style={{ cursor: "pointer" }}
-              >
+              <Table.Th onClick={() => handleSort("phone")} style={{ cursor: "pointer" }}>
                 <Group>
                   <span>Telefono</span>
                   {sortBy === "phone" ? (
@@ -260,17 +229,7 @@ export function UsersTable() {
                   )}
                 </Group>
               </Table.Th>
-              <Table.Th
-                onClick={() => {
-                  if (sortBy === "role") {
-                    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-                  } else {
-                    setSortBy("role");
-                    setSortDirection("asc");
-                  }
-                }}
-                style={{ cursor: "pointer" }}
-              >
+              <Table.Th onClick={() => handleSort("role")} style={{ cursor: "pointer" }}>
                 <Group>
                   <span>Rol</span>
                   {sortBy === "role" ? (
