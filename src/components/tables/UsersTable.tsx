@@ -8,6 +8,7 @@ import { DeleteUserModal } from "../modals/DeleteUserModal";
 import { User } from "../../types/User";
 import { Loading } from "../Loading";
 import { useMediaQuery } from "@mantine/hooks";
+import { roles } from "../../constants";
 
 export function UsersTable() {
   const [page, setPage] = useState(1);
@@ -20,10 +21,9 @@ export function UsersTable() {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string | null>(null);
   const isMobile = useMediaQuery("(max-width: 600px)");
-
-  const totalRecords = users.length;
-  const totalPages = useMemo(() => Math.ceil(totalRecords / parseInt(rowsPerPage)), [totalRecords, rowsPerPage]);
 
   useEffect(() => {
     fetchUsers();
@@ -44,26 +44,42 @@ export function UsersTable() {
     }
   }, [page, rowsPerPage]);
 
-  const sortedData = [...users].sort((a, b) => {
-    if (!sortBy) return 0;
+  const filteredUsers = useMemo(() => {
+    return users.filter(
+      (user) =>
+        (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          user.lastname.toLowerCase().includes(searchQuery.toLowerCase())) &&
+        (!roleFilter || user.role === roleFilter)
+    );
+  }, [users, searchQuery, roleFilter]);
 
-    const aValue = String(a[sortBy]).toLowerCase();
-    const bValue = String(b[sortBy]).toLowerCase();
+  const totalRecords = filteredUsers.length;
+  const totalPages = useMemo(() => Math.ceil(totalRecords / parseInt(rowsPerPage)), [totalRecords, rowsPerPage]);
 
-    if (sortDirection === "asc") {
-      return aValue > bValue ? 1 : -1;
-    }
-    return aValue < bValue ? 1 : -1;
-  });
+  const sortedData = useMemo(() => {
+    return [...filteredUsers].sort((a, b) => {
+      if (!sortBy) return 0;
 
-  const paginatedData = sortedData.slice((page - 1) * parseInt(rowsPerPage), page * parseInt(rowsPerPage));
+      const aValue = String(a[sortBy]).toLowerCase();
+      const bValue = String(b[sortBy]).toLowerCase();
 
-  const handleDeleteClick = (user: User) => {
+      if (sortDirection === "asc") {
+        return aValue > bValue ? 1 : -1;
+      }
+      return aValue < bValue ? 1 : -1;
+    });
+  }, [filteredUsers, sortBy, sortDirection]);
+
+  const paginatedData = useMemo(() => {
+    return sortedData.slice((page - 1) * parseInt(rowsPerPage), page * parseInt(rowsPerPage));
+  }, [sortedData, page, rowsPerPage]);
+
+  const handleDeleteClick = useCallback((user: User) => {
     setUserToDelete(user);
     setDeleteModalOpened(true);
-  };
+  }, []);
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = useCallback(async () => {
     if (!userToDelete) return;
 
     try {
@@ -85,14 +101,14 @@ export function UsersTable() {
     } catch (error) {
       console.error("Error deleting user:", error);
     }
-  };
+  }, [userToDelete]);
 
-  const handleEdit = (user: User) => {
+  const handleEdit = useCallback((user: User) => {
     setEditingUser(user);
     setOpened(true);
-  };
+  }, []);
 
-  const handleSave = async (user: User) => {
+  const handleSave = useCallback(async (user: User) => {
     try {
       const response = await fetch(`/api/users`, {
         method: "PUT",
@@ -115,11 +131,11 @@ export function UsersTable() {
     } catch (error) {
       console.error("Error saving user:", error);
     }
-  };
+  }, []);
 
-  const getRoleColor = (role: string) => {
+  const getRoleColor = useCallback((role: string) => {
     switch (role.toLowerCase()) {
-      case "admin":
+      case "administrador":
         return "red";
       case "promotor":
         return "blue";
@@ -128,57 +144,61 @@ export function UsersTable() {
       default:
         return "gray";
     }
-  };
+  }, []);
 
-  const rows = paginatedData.map((user, index) => (
-    <Table.Tr key={user.email}>
-      <Table.Td>{(page - 1) * parseInt(rowsPerPage) + index + 1}</Table.Td>
-      <Table.Td>{user.name}</Table.Td>
-      <Table.Td>{user.lastname}</Table.Td>
-      <Table.Td>{user.email}</Table.Td>
-      <Table.Td>{user.phone}</Table.Td>
-      <Table.Td>
-        <Badge color={getRoleColor(user.role)} variant="light">
-          {user.role}
-        </Badge>
-      </Table.Td>
-      <Table.Td>
-        <Group>
-          <Button size="xs" variant="outline" p={0} w={30} h={30} onClick={() => handleEdit(user)}>
-            <IconEdit size="1rem" stroke={1.5} />
-          </Button>
-          <Button size="xs" color="red" variant="outline" p={0} w={30} h={30} onClick={() => handleDeleteClick(user)}>
-            <IconTrash size="1rem" stroke={1.5} />
-          </Button>
-        </Group>
-      </Table.Td>
-    </Table.Tr>
-  ));
+  const rows = useMemo(() => {
+    return paginatedData.map((user, index) => (
+      <Table.Tr key={user.email}>
+        <Table.Td>{(page - 1) * parseInt(rowsPerPage) + index + 1}</Table.Td>
+        <Table.Td>{user.name}</Table.Td>
+        <Table.Td>{user.lastname}</Table.Td>
+        <Table.Td>{user.email}</Table.Td>
+        <Table.Td>{user.phone}</Table.Td>
+        <Table.Td>
+          <Badge color={getRoleColor(user.role)} variant="light">
+            {user.role}
+          </Badge>
+        </Table.Td>
+        <Table.Td>
+          <Group>
+            <Button size="xs" variant="outline" p={0} w={30} h={30} onClick={() => handleEdit(user)}>
+              <IconEdit size="1rem" stroke={1.5} />
+            </Button>
+            <Button size="xs" color="red" variant="outline" p={0} w={30} h={30} onClick={() => handleDeleteClick(user)}>
+              <IconTrash size="1rem" stroke={1.5} />
+            </Button>
+          </Group>
+        </Table.Td>
+      </Table.Tr>
+    ));
+  }, [paginatedData, page, rowsPerPage, getRoleColor, handleEdit, handleDeleteClick]);
 
-  const cards = paginatedData.map((user, index) => (
-    <Card key={user.email} shadow="sm" padding="lg" radius="md" withBorder mt={10}>
-      <Group justify="space-between">
-        <Text>
-          {(page - 1) * parseInt(rowsPerPage) + index + 1} - {user.name} {user.lastname}
-        </Text>
-        <Badge color={getRoleColor(user.role)} variant="light">
-          {user.role}
-        </Badge>
-      </Group>
-      <Text>{user.email}</Text>
-      <Group justify="space-between">
-        <Text>{user.phone}</Text>
-        <Group>
-          <Button size="xs" variant="outline" p={0} w={30} h={30} onClick={() => handleEdit(user)}>
-            <IconEdit size="1rem" stroke={1.5} />
-          </Button>
-          <Button size="xs" color="red" variant="outline" p={0} w={30} h={30} onClick={() => handleDeleteClick(user)}>
-            <IconTrash size="1rem" stroke={1.5} />
-          </Button>
+  const cards = useMemo(() => {
+    return paginatedData.map((user, index) => (
+      <Card key={user.email} shadow="sm" padding="lg" radius="md" withBorder mt={10}>
+        <Group justify="space-between">
+          <Text>
+            {(page - 1) * parseInt(rowsPerPage) + index + 1} - {user.name} {user.lastname}
+          </Text>
+          <Badge color={getRoleColor(user.role)} variant="light">
+            {user.role}
+          </Badge>
         </Group>
-      </Group>
-    </Card>
-  ));
+        <Text>{user.email}</Text>
+        <Group justify="space-between">
+          <Text>{user.phone}</Text>
+          <Group>
+            <Button size="xs" variant="outline" p={0} w={30} h={30} onClick={() => handleEdit(user)}>
+              <IconEdit size="1rem" stroke={1.5} />
+            </Button>
+            <Button size="xs" color="red" variant="outline" p={0} w={30} h={30} onClick={() => handleDeleteClick(user)}>
+              <IconTrash size="1rem" stroke={1.5} />
+            </Button>
+          </Group>
+        </Group>
+      </Card>
+    ));
+  }, [paginatedData, page, rowsPerPage, getRoleColor, handleEdit, handleDeleteClick]);
 
   if (loading) {
     return <Loading />;
@@ -195,7 +215,22 @@ export function UsersTable() {
 
   return (
     <>
-      <Input placeholder="Buscar" onChange={() => {}} />
+      <Flex mb="md" gap="md">
+        <Input
+          placeholder="Buscar nombre o apellido"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ flexGrow: 1 }}
+        />
+        <Select
+          placeholder="Filtrar por rol"
+          value={roleFilter}
+          onChange={(value) => setRoleFilter(value)}
+          data={roles.map((role) => ({ value: role, label: role }))}
+          style={{ flexGrow: 1 }}
+          clearable
+        />
+      </Flex>
       {isMobile ? (
         <>{cards}</>
       ) : (
