@@ -1,19 +1,36 @@
 import { ReactNode } from "react";
-import { AppShell, Title } from "@mantine/core";
+import { AppShell, Group, Title, Menu, Burger } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 
 interface CommonLayoutProps {
   children: ReactNode;
 }
 
 export function CommonLayout({ children }: CommonLayoutProps) {
+  const isMobile = useMediaQuery("(max-width: 425px)");
   return (
-    <AppShell>
+    <AppShell padding="md" /* header={{ height: 60 }} */>
       <AppShell.Header>
-        <Title order={2} style={titleStyle} mt="lg">
-          Complejo Dysis - Administrador
-        </Title>
+        <Group justify="space-between" style={{ width: "100%" }} display="flex">
+          <Title order={isMobile ? 4 : 2} style={titleStyle} mt="sm">
+            Complejo Dysis{/*  - Administrador */}
+          </Title>
+          <Menu>
+            <Menu.Target>
+              <Burger></Burger>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item onClick={() => console.log("Desloguear")}>Usuarios</Menu.Item>
+              <Menu.Item onClick={() => console.log("Desloguear")}>Eventos</Menu.Item>
+              <Menu.Item onClick={() => console.log("Desloguear")}>Invitados</Menu.Item>
+              <Menu.Item onClick={() => console.log("Desloguear")}>Inventario</Menu.Item>
+              <Menu.Item onClick={() => console.log("Desloguear")}>Ventas</Menu.Item>
+              <Menu.Item onClick={() => console.log("Desloguear")}>Desloguear</Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
       </AppShell.Header>
-      <AppShell.Main style={{ paddingTop: "100px" }}>{children}</AppShell.Main>
+      <AppShell.Main style={mainStyle}>{children}</AppShell.Main>
     </AppShell>
   );
 }
@@ -25,4 +42,12 @@ const titleStyle = {
   marginBottom: "1.5rem",
   fontFamily: "Arial Black",
   justifySelf: "center",
+};
+
+const mainStyle = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "calc(100vh - 60px)", // Adjust height based on header height
+  paddingTop: "60px", // Adjust padding based on header height
 };

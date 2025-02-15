@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { Table, Button, Group, Badge, Select, Pagination, Flex, Text } from "@mantine/core";
+import { Table, Button, Group, Badge, Select, Pagination, Flex, Text, ScrollArea, Card, Input } from "@mantine/core";
 import { IconEdit, IconTrash, IconChevronDown, IconChevronUp, IconSelector } from "@tabler/icons-react";
 import { EditUserModal } from "../modals/EditUserModal";
 import { DeleteUserModal } from "../modals/DeleteUserModal";
 import { User } from "../../types/User";
 import { Loading } from "../Loading";
+import { useMediaQuery } from "@mantine/hooks";
 
 export function UsersTable() {
   const [page, setPage] = useState(1);
@@ -19,6 +20,7 @@ export function UsersTable() {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const isMobile = useMediaQuery("(max-width: 600px)");
 
   const totalRecords = users.length;
   const totalPages = useMemo(() => Math.ceil(totalRecords / parseInt(rowsPerPage)), [totalRecords, rowsPerPage]);
@@ -153,6 +155,31 @@ export function UsersTable() {
     </Table.Tr>
   ));
 
+  const cards = paginatedData.map((user, index) => (
+    <Card key={user.email} shadow="sm" padding="lg" radius="md" withBorder mt={10}>
+      <Group justify="space-between">
+        <Text>
+          {(page - 1) * parseInt(rowsPerPage) + index + 1} - {user.name} {user.lastname}
+        </Text>
+        <Badge color={getRoleColor(user.role)} variant="light">
+          {user.role}
+        </Badge>
+      </Group>
+      <Text>{user.email}</Text>
+      <Group justify="space-between">
+        <Text>{user.phone}</Text>
+        <Group>
+          <Button size="xs" variant="outline" p={0} w={30} h={30} onClick={() => handleEdit(user)}>
+            <IconEdit size="1rem" stroke={1.5} />
+          </Button>
+          <Button size="xs" color="red" variant="outline" p={0} w={30} h={30} onClick={() => handleDeleteClick(user)}>
+            <IconTrash size="1rem" stroke={1.5} />
+          </Button>
+        </Group>
+      </Group>
+    </Card>
+  ));
+
   if (loading) {
     return <Loading />;
   }
@@ -168,89 +195,101 @@ export function UsersTable() {
 
   return (
     <>
-      <div style={{ maxHeight: "496px", overflow: "auto" }}>
-        <Table striped stickyHeader>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>#</Table.Th>
-              <Table.Th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
-                <Group>
-                  <span>Nombre</span>
-                  {sortBy === "name" ? (
-                    sortDirection === "asc" ? (
-                      <IconChevronUp size={14} />
-                    ) : (
-                      <IconChevronDown size={14} />
-                    )
-                  ) : (
-                    <IconSelector size={14} />
-                  )}
-                </Group>
-              </Table.Th>
-              <Table.Th onClick={() => handleSort("lastname")} style={{ cursor: "pointer" }}>
-                <Group>
-                  <span>Apellido</span>
-                  {sortBy === "lastname" ? (
-                    sortDirection === "asc" ? (
-                      <IconChevronUp size={14} />
-                    ) : (
-                      <IconChevronDown size={14} />
-                    )
-                  ) : (
-                    <IconSelector size={14} />
-                  )}
-                </Group>
-              </Table.Th>
-              <Table.Th onClick={() => handleSort("email")} style={{ cursor: "pointer" }}>
-                <Group>
-                  <span>Email</span>
-                  {sortBy === "email" ? (
-                    sortDirection === "asc" ? (
-                      <IconChevronUp size={14} />
-                    ) : (
-                      <IconChevronDown size={14} />
-                    )
-                  ) : (
-                    <IconSelector size={14} />
-                  )}
-                </Group>
-              </Table.Th>
-              <Table.Th onClick={() => handleSort("phone")} style={{ cursor: "pointer" }}>
-                <Group>
-                  <span>Telefono</span>
-                  {sortBy === "phone" ? (
-                    sortDirection === "asc" ? (
-                      <IconChevronUp size={14} />
-                    ) : (
-                      <IconChevronDown size={14} />
-                    )
-                  ) : (
-                    <IconSelector size={14} />
-                  )}
-                </Group>
-              </Table.Th>
-              <Table.Th onClick={() => handleSort("role")} style={{ cursor: "pointer" }}>
-                <Group>
-                  <span>Rol</span>
-                  {sortBy === "role" ? (
-                    sortDirection === "asc" ? (
-                      <IconChevronUp size={14} />
-                    ) : (
-                      <IconChevronDown size={14} />
-                    )
-                  ) : (
-                    <IconSelector size={14} />
-                  )}
-                </Group>
-              </Table.Th>
-              <Table.Th>Acciones</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
-        </Table>
-      </div>
-
-      <Flex justify="space-between" align="center" mt={10}>
+      <Input placeholder="Buscar" onChange={() => {}} />
+      {isMobile ? (
+        <>{cards}</>
+      ) : (
+        <div style={{ maxHeight: "496px", overflow: "auto" }}>
+          <ScrollArea>
+            <Table striped stickyHeader>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>#</Table.Th>
+                  <Table.Th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+                    <Group>
+                      <span>Nombre</span>
+                      {sortBy === "name" ? (
+                        sortDirection === "asc" ? (
+                          <IconChevronUp size={14} />
+                        ) : (
+                          <IconChevronDown size={14} />
+                        )
+                      ) : (
+                        <IconSelector size={14} />
+                      )}
+                    </Group>
+                  </Table.Th>
+                  <Table.Th onClick={() => handleSort("lastname")} style={{ cursor: "pointer" }}>
+                    <Group>
+                      <span>Apellido</span>
+                      {sortBy === "lastname" ? (
+                        sortDirection === "asc" ? (
+                          <IconChevronUp size={14} />
+                        ) : (
+                          <IconChevronDown size={14} />
+                        )
+                      ) : (
+                        <IconSelector size={14} />
+                      )}
+                    </Group>
+                  </Table.Th>
+                  <Table.Th onClick={() => handleSort("email")} style={{ cursor: "pointer" }}>
+                    <Group>
+                      <span>Email</span>
+                      {sortBy === "email" ? (
+                        sortDirection === "asc" ? (
+                          <IconChevronUp size={14} />
+                        ) : (
+                          <IconChevronDown size={14} />
+                        )
+                      ) : (
+                        <IconSelector size={14} />
+                      )}
+                    </Group>
+                  </Table.Th>
+                  <Table.Th onClick={() => handleSort("phone")} style={{ cursor: "pointer" }}>
+                    <Group>
+                      <span>Telefono</span>
+                      {sortBy === "phone" ? (
+                        sortDirection === "asc" ? (
+                          <IconChevronUp size={14} />
+                        ) : (
+                          <IconChevronDown size={14} />
+                        )
+                      ) : (
+                        <IconSelector size={14} />
+                      )}
+                    </Group>
+                  </Table.Th>
+                  <Table.Th onClick={() => handleSort("role")} style={{ cursor: "pointer" }}>
+                    <Group>
+                      <span>Rol</span>
+                      {sortBy === "role" ? (
+                        sortDirection === "asc" ? (
+                          <IconChevronUp size={14} />
+                        ) : (
+                          <IconChevronDown size={14} />
+                        )
+                      ) : (
+                        <IconSelector size={14} />
+                      )}
+                    </Group>
+                  </Table.Th>
+                  <Table.Th>Acciones</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>{rows}</Table.Tbody>
+            </Table>
+          </ScrollArea>
+        </div>
+      )}
+      <Flex
+        direction={isMobile ? "column" : "row"}
+        justify={isMobile ? "center" : "space-between"}
+        align="center"
+        mt={10}
+        gap={isMobile ? "md" : 0}
+      >
         <Select
           value={rowsPerPage}
           onChange={(value) => {

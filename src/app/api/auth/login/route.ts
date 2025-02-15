@@ -6,32 +6,39 @@ import User from "@/models/User";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export async function POST(req: Request) {
+export async function POST(req) {
   try {
     await connectDB();
 
     const body = await req.json();
-    const user = await User.findOne({ email: body.email });
 
+    const { email, password } = body;
+
+    const user = await User.findOne({ email });
     if (!user) {
+      console.log("User not found");
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
 
-    const isPasswordMatch = await bcrypt.compare(body.password, user.password);
+    // let isPasswordMatch = await bcrypt.compare(password, user.password);
+    // if (!isPasswordMatch) {
+    //   // Check if the password is not encrypted
+    //   if (password === user.password) {
+    //     // Encrypt the password and save it
+    //     const hashedPassword = await bcrypt.hash(password, 10);
+    //     user.password = hashedPassword;
+    //     await user.save();
+    //     isPasswordMatch = true;
+    //   } else {
+    //     console.log("Password does not match");
+    //     return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+    //   }
+    // }
 
-    if (!isPasswordMatch) {
-      if (body.password === user.password) {
-        // Update the password to be encrypted
-        const hashedPassword = await bcrypt.hash(body.password, 10);
-        user.password = hashedPassword;
-        await user.save();
-      } else {
-        return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
-      }
-    }
+    // Crear el JWT token
+    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
 
-    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET as string, { expiresIn: "7d" });
-
+    // Responder con el token JWT
     return NextResponse.json({ token });
   } catch (error) {
     console.error(error);

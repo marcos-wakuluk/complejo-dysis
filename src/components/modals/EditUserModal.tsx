@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Modal, TextInput, PasswordInput, Button, Group } from "@mantine/core";
+import { Modal, TextInput, PasswordInput, Button, Group, Select } from "@mantine/core";
 import { User } from "../../types/User";
+import { roles } from "../../constants";
 
 interface EditUserModalProps {
   readonly opened: boolean;
@@ -60,6 +61,14 @@ export function EditUserModal({ opened, onClose, user, onSave }: EditUserModalPr
             label="Telefono"
             value={editingUser.phone || ""}
             onChange={(e) => setEditingUser({ ...editingUser, phone: e.target.value })}
+            mb="md"
+          />
+          <Select
+            label="Rol"
+            name="role"
+            data={roles}
+            value={editingUser.role}
+            onChange={(value) => setEditingUser({ ...editingUser, role: value ?? "" })}
             mb="md"
           />
           <Group justify="center" mt="xl">

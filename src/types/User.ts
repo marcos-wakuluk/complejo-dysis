@@ -8,4 +8,9 @@ export interface User {
   role: string;
   date: string;
   password: string;
+  number?: number;
+  age?: number;
+  instagram?: string;
+  guestCode?: string;
+  status?: string;
 }

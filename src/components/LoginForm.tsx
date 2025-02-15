@@ -60,6 +60,8 @@ export function LoginForm() {
     } catch (error) {
       console.error("Login error", error);
       setError("An error occurred during login");
+    } finally {
+      setLoading(false);
     }
   };
 
