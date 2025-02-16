@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { Container, Table, Button, Collapse, Title } from "@mantine/core";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { jwtDecode } from "jwt-decode";
@@ -67,6 +67,10 @@ export default function Ventas() {
     return tickets.filter((ticket) => ticket.event === eventId);
   };
 
+  const handleBack = useCallback(() => {
+    router.push("/dashboard/promotor");
+  }, [router]);
+
   return (
     <Container>
       <Title order={2} mb="lg">
@@ -76,8 +80,8 @@ export default function Ventas() {
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Evento</Table.Th>
-            <Table.Th>Tickets vendidos</Table.Th>
-            <Table.Th>Acciones</Table.Th>
+            <Table.Th>Vendidos</Table.Th>
+            <Table.Th></Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -87,11 +91,13 @@ export default function Ventas() {
                 <Table.Td>{event.name}</Table.Td>
                 <Table.Td>{tickets.filter((ticket) => ticket.event == event._id).length}</Table.Td>
                 <Table.Td>
-                  <Button
-                    variant="subtle"
-                    onClick={() => handleToggle(event._id)}
-                    rightSection={openedEvent === event._id ? <IconChevronUp /> : <IconChevronDown />}
-                  ></Button>
+                  {tickets.filter((ticket) => ticket.event == event._id).length > 0 && (
+                    <Button
+                      variant="subtle"
+                      onClick={() => handleToggle(event._id)}
+                      rightSection={openedEvent === event._id ? <IconChevronUp /> : <IconChevronDown />}
+                    ></Button>
+                  )}
                 </Table.Td>
               </Table.Tr>
               <Table.Tr>
@@ -124,6 +130,9 @@ export default function Ventas() {
           ))}
         </Table.Tbody>
       </Table>
+      <Button onClick={handleBack} variant="outline" fullWidth mr={10}>
+        Atrás
+      </Button>
     </Container>
   );
 }

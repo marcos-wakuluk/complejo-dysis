@@ -128,12 +128,10 @@ export default function CreateTicket() {
           value={event}
           onChange={handleEventChange}
         />
-        {tanda && (
-          <Center mt="lg" display="flex" flex="space-between">
-            <TextInput label="Tanda" value={`${tandaIndex}`} readOnly mr={10} />
-            <TextInput label="Precio" value={`$${tanda.price}`} readOnly />
-          </Center>
-        )}
+        <Center mt="lg" display="flex" flex="space-between">
+          <TextInput label="Tanda" value={tandaIndex ?? ""} readOnly mr={10} />
+          <TextInput label="Precio" value={`$${tanda?.price ?? ""}`} readOnly />
+        </Center>
         <TextInput label="DNI" placeholder="Ingrese su DNI" value={dni} onChange={handleDniChange} />
         <TextInput label="Nombre" placeholder="Nombre del usuario" value={userName} readOnly />
       </Stack>

@@ -8,6 +8,7 @@ interface CommonLayoutProps {
 
 export function CommonLayout({ children }: CommonLayoutProps) {
   const isMobile = useMediaQuery("(max-width: 425px)");
+
   return (
     <AppShell padding="md" /* header={{ height: 60 }} */>
       <AppShell.Header>

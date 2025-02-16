@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 if (!JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined");
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const { email, password } = body;
+    const { email /* password */ } = body;
 
     const user = await User.findOne({ email });
 
