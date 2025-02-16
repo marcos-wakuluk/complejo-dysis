@@ -52,8 +52,7 @@ export function EditUserModal({ opened, onClose, user, onSave }: EditUserModalPr
             mb="md"
           />
           <PasswordInput
-            label="Contraseña"
-            value={editingUser.password || ""}
+            label="Nueva contraseña"
             onChange={(e) => setEditingUser({ ...editingUser, password: e.target.value })}
             mb="md"
           />

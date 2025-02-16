@@ -48,7 +48,7 @@ export function UsersTable() {
     return users.filter(
       (user) =>
         (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.lastname.toLowerCase().includes(searchQuery.toLowerCase())) &&
+          user.lastname?.toLowerCase().includes(searchQuery.toLowerCase())) &&
         (!roleFilter || user.role === roleFilter)
     );
   }, [users, searchQuery, roleFilter]);
@@ -148,7 +148,7 @@ export function UsersTable() {
 
   const rows = useMemo(() => {
     return paginatedData.map((user, index) => (
-      <Table.Tr key={user.email}>
+      <Table.Tr key={user._id}>
         <Table.Td>{(page - 1) * parseInt(rowsPerPage) + index + 1}</Table.Td>
         <Table.Td>{user.name}</Table.Td>
         <Table.Td>{user.lastname}</Table.Td>
@@ -175,7 +175,7 @@ export function UsersTable() {
 
   const cards = useMemo(() => {
     return paginatedData.map((user, index) => (
-      <Card key={user.email} shadow="sm" padding="lg" radius="md" withBorder mt={10}>
+      <Card key={user._id} shadow="sm" padding="lg" radius="md" withBorder mt={10}>
         <Group justify="space-between">
           <Text>
             {(page - 1) * parseInt(rowsPerPage) + index + 1} - {user.name} {user.lastname}
@@ -232,7 +232,7 @@ export function UsersTable() {
         />
       </Flex>
       {isMobile ? (
-        <>{cards}</>
+        cards
       ) : (
         <div style={{ maxHeight: "496px", overflow: "auto" }}>
           <ScrollArea>

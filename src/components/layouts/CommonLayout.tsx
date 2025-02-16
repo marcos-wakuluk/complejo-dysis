@@ -10,7 +10,7 @@ export function CommonLayout({ children }: CommonLayoutProps) {
   const isMobile = useMediaQuery("(max-width: 425px)");
 
   return (
-    <AppShell padding="md" /* header={{ height: 60 }} */>
+    <AppShell padding="md">
       <AppShell.Header>
         <Group justify="space-between" style={{ width: "100%" }} display="flex">
           <Title order={isMobile ? 4 : 2} style={titleStyle} mt="sm">
@@ -46,9 +46,9 @@ const titleStyle = {
 };
 
 const mainStyle = {
-  display: "flex",
+  display: "block",
   justifyContent: "center",
   alignItems: "center",
-  height: "calc(100vh - 60px)", // Adjust height based on header height
+  height: "calc(100vh - 30px)", // Adjust height based on header height
   paddingTop: "60px", // Adjust padding based on header height
 };
