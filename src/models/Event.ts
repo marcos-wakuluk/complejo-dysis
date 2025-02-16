@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+const TandaSchema = new mongoose.Schema({
+  date: { type: Date, required: true },
+  price: { type: Number, required: true },
+});
+
 const eventSchema = new mongoose.Schema(
   {
     name: {
@@ -34,6 +39,7 @@ const eventSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    tandas: [TandaSchema],
   },
   {
     versionKey: false,

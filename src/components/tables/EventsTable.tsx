@@ -8,6 +8,7 @@ import { IconEdit, IconTrash, IconTicket, IconPlus } from "@tabler/icons-react";
 import { Event } from "@/types/Event";
 import CreateEventModal from "../modals/CreateEventModal";
 import { Loading } from "../Loading";
+import { InfoEventModal } from "../modals/InfoEventModal";
 
 export function EventsTable() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -15,6 +16,7 @@ export function EventsTable() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [infoModalOpen, setInfoModalOpen] = useState(false);
 
   const [events, setEvents] = useState<Event[]>([]);
 
@@ -78,6 +80,11 @@ export function EventsTable() {
     }
   };
 
+  const handleInfoClick = (event: Event) => {
+    setSelectedEvent(event);
+    setInfoModalOpen(true);
+  };
+
   const rows = events.map((event) => (
     <Table.Tr key={`${event.name}-${event.date}`}>
       <Table.Td>{event.name}</Table.Td>
@@ -101,7 +108,7 @@ export function EventsTable() {
             <IconTrash size={16} />
           </Button>
           <Button size="xs" variant="outline" color="blue">
-            <IconTicket size={16} />
+            <IconTicket size={16} onClick={() => handleInfoClick(event)} />
           </Button>
         </Group>
       </Table.Td>
@@ -156,6 +163,10 @@ export function EventsTable() {
 
       {isCreateModalOpen && (
         <CreateEventModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onSave={handleSave} />
+      )}
+
+      {selectedEvent && (
+        <InfoEventModal event={selectedEvent} isOpen={infoModalOpen} onClose={() => setInfoModalOpen(false)} />
       )}
     </>
   );

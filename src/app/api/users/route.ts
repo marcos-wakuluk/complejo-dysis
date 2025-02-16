@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     await connectDB();
 
-    const users = await User.find({});
+    const url = new URL(req.url);
+    const role = url.searchParams.get("role");
+
+    const query = role ? { role } : {};
+    const users = await User.find(query);
 
     return NextResponse.json(users);
   } catch (error) {

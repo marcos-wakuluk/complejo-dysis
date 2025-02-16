@@ -6,7 +6,11 @@ import User from "@/models/User";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export async function POST(req) {
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET is not defined");
+}
+
+export async function POST(req: Request) {
   try {
     await connectDB();
 
@@ -15,6 +19,7 @@ export async function POST(req) {
     const { email, password } = body;
 
     const user = await User.findOne({ email });
+
     if (!user) {
       console.log("User not found");
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
@@ -36,7 +41,11 @@ export async function POST(req) {
     // }
 
     // Crear el JWT token
-    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign(
+      { userId: user._id, role: user.role, name: user.name, lastname: user.lastname },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
     // Responder con el token JWT
     return NextResponse.json({ token });

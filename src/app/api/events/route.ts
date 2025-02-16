@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Event from "@/models/Event";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     await connectDB();
 
-    const events = await Event.find({});
+    const url = new URL(req.url);
+    const status = url.searchParams.get("status");
+
+    const query = status ? { status } : {};
+    const events = await Event.find(query);
 
     return NextResponse.json(events);
   } catch (error) {

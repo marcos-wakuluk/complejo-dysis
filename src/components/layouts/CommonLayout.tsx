@@ -3,7 +3,7 @@ import { AppShell, Group, Title, Menu, Burger } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
 interface CommonLayoutProps {
-  children: ReactNode;
+  readonly children: ReactNode;
 }
 
 export function CommonLayout({ children }: CommonLayoutProps) {
@@ -13,7 +13,7 @@ export function CommonLayout({ children }: CommonLayoutProps) {
       <AppShell.Header>
         <Group justify="space-between" style={{ width: "100%" }} display="flex">
           <Title order={isMobile ? 4 : 2} style={titleStyle} mt="sm">
-            Complejo Dysis{/*  - Administrador */}
+            Complejo Dysis
           </Title>
           <Menu>
             <Menu.Target>

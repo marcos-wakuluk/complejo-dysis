@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Modal, TextInput, Textarea, Button, Group } from "@mantine/core";
+import { Modal, TextInput, Textarea, Button, Group, Select } from "@mantine/core";
 import { Event } from "@/types/Event";
-
+import { eventStatus } from "@/constants";
 interface InputChangeEvent {
   target: {
     name: string;
@@ -69,7 +69,13 @@ export function EditEventModal({ event, isOpen, onClose, onSave }: EditEventModa
             value={updatedEvent.ticketsSold}
             onChange={handleInputChange}
           />
-          <TextInput label="Estado" name="status" value={updatedEvent.status} onChange={handleInputChange} />
+          <Select
+            label="Estado"
+            name="status"
+            value={updatedEvent.status}
+            onChange={(value) => handleInputChange({ target: { name: "status", value: value ?? "" } })}
+            data={eventStatus.map((status) => ({ value: status, label: status }))}
+          />
           <Group mt="md" justify="center">
             <Button variant="outline" color="red" onClick={onClose}>
               Cancelar

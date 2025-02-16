@@ -43,13 +43,17 @@ export function LoginForm() {
 
       if (response.ok) {
         const decodedToken = jwtDecode<{ role: string }>(data.token);
+        localStorage.setItem("token", data.token);
 
         switch (decodedToken.role) {
-          case "admin":
+          case "administrador":
             router.push("/dashboard/admin");
             break;
           case "user":
             router.push("/dashboard/user");
+            break;
+          case "promotor":
+            router.push("/dashboard/promotor");
             break;
           default:
             alert("Unknown role");
