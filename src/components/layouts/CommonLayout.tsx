@@ -57,7 +57,7 @@ const mainStyle = {
   display: "block",
   justifyContent: "center",
   alignItems: "center",
-  height: "calc(100vh - 30px)", // Adjust height based on header height
-  paddingTop: "60px", // Adjust padding based on header height
-  marginTop: "60px", // Adjust padding based on header height
+  height: "calc(100vh - 30px)",
+  paddingTop: "60px",
+  marginTop: "60px",
 };
