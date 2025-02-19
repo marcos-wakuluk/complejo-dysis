@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import AdminDashboard from "@/app/dashboard/admin/page";
 
 export function CommonLayout() {
-  const isMobile = useMediaQuery("(max-width: 425px)");
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<string | null>("users");
 

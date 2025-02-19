@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const TandaSchema = new mongoose.Schema({
-  date: { type: Date, required: true },
+  date: { type: String, required: true },
   price: { type: Number, required: true },
 });
 
@@ -16,7 +16,7 @@ const eventSchema = new mongoose.Schema(
       required: true,
     },
     date: {
-      type: Date,
+      type: String,
       required: true,
     },
     startTime: {

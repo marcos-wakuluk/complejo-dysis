@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Table, Button, Group, Badge } from "@mantine/core";
+import { Table, Button, Group, Badge, Card, Text, Center } from "@mantine/core";
 import { EditEventModal } from "@/components/modals/EditEventModal";
 import { DeleteEventModal } from "../modals/DeleteEventModal";
 import { IconEdit, IconTrash, IconTicket, IconPlus } from "@tabler/icons-react";
@@ -9,6 +9,7 @@ import { Event } from "@/types/Event";
 import CreateEventModal from "../modals/CreateEventModal";
 import { Loading } from "../Loading";
 import { InfoEventModal } from "../modals/InfoEventModal";
+import { useMediaQuery } from "@mantine/hooks";
 
 export function EventsTable() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -17,6 +18,7 @@ export function EventsTable() {
   const [loading, setLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [infoModalOpen, setInfoModalOpen] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const [events, setEvents] = useState<Event[]>([]);
 
@@ -115,6 +117,76 @@ export function EventsTable() {
     </Table.Tr>
   ));
 
+  const renderTable = () => (
+    <Table striped highlightOnHover>
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th>Nombre</Table.Th>
+          <Table.Th>Descripcion</Table.Th>
+          <Table.Th>Fecha</Table.Th>
+          <Table.Th>Inicio</Table.Th>
+          <Table.Th>Capacidad</Table.Th>
+          <Table.Th>Entered</Table.Th>
+          <Table.Th>Entradas Vendidas</Table.Th>
+          <Table.Th>Estado</Table.Th>
+          <Table.Th>Acciones</Table.Th>
+        </Table.Tr>
+      </Table.Thead>
+      <Table.Tbody>{rows}</Table.Tbody>
+    </Table>
+  );
+
+  const renderCards = () => (
+    <div>
+      {events.map((event) => (
+        <Card key={`${event.name}-${event.date}`} shadow="sm" padding="lg" radius="md" withBorder mt={10}>
+          <Group>
+            <Text>
+              {event.name}
+              {" - "}
+              {new Date(event.date).toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "2-digit" })}
+            </Text>
+          </Group>
+          <Text>Entradas Vendidas: {event.ticketsSold}</Text>
+          <Badge color={getStatusColor(event.status)} variant="light">
+            {event.status}
+          </Badge>
+          <Center mt={10}>
+            <Group justify="space-between">
+              <Group>
+                <Button size="xs" variant="outline" p={0} w={30} h={30} onClick={() => handleEditClick(event)}>
+                  <IconEdit size="1rem" stroke={1.5} />
+                </Button>
+                <Button
+                  size="xs"
+                  color="red"
+                  variant="outline"
+                  p={0}
+                  w={30}
+                  h={30}
+                  onClick={() => handleDeleteClick(event)}
+                >
+                  <IconTrash size="1rem" stroke={1.5} />
+                </Button>
+                <Button
+                  size="xs"
+                  variant="outline"
+                  color="blue"
+                  p={0}
+                  w={30}
+                  h={30}
+                  onClick={() => handleInfoClick(event)}
+                >
+                  <IconTicket size="1rem" stroke={1.5} />
+                </Button>
+              </Group>
+            </Group>
+          </Center>
+        </Card>
+      ))}
+    </div>
+  );
+
   if (loading) {
     return <Loading />;
   }
@@ -126,22 +198,7 @@ export function EventsTable() {
           <IconPlus size={16} /> Nuevo evento
         </Button>
       </Group>
-      <Table striped highlightOnHover>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Nombre</Table.Th>
-            <Table.Th>Descripcion</Table.Th>
-            <Table.Th>Fecha</Table.Th>
-            <Table.Th>Inicio</Table.Th>
-            <Table.Th>Capacidad</Table.Th>
-            <Table.Th>Entered</Table.Th>
-            <Table.Th>Entradas Vendidas</Table.Th>
-            <Table.Th>Estado</Table.Th>
-            <Table.Th>Acciones</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
+      {isMobile ? renderCards() : renderTable()}
 
       {selectedEvent && (
         <EditEventModal

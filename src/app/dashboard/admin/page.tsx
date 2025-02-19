@@ -15,7 +15,7 @@ interface AdminDashboardProps {
 }
 
 export default function AdminDashboard({ activeTab, setActiveTab }: AdminDashboardProps) {
-  const isMobile = useMediaQuery("(max-width: 430px)");
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
     <Container size="xl">

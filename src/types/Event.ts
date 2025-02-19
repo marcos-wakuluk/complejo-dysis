@@ -1,3 +1,7 @@
+export interface Tanda {
+  date: string;
+  price: number;
+}
 export interface Event {
   _id?: string;
   name: string;
@@ -8,4 +12,5 @@ export interface Event {
   peopleEntered: number;
   ticketsSold: number;
   status: string;
+  tandas: Tanda[];
 }
