@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Container, Tabs } from "@mantine/core";
 import { IconUsers, IconCalendarEvent, IconTicket, IconBox, IconCash } from "@tabler/icons-react";
 import { UsersTable } from "@/components/tables/UsersTable";
@@ -10,14 +9,18 @@ import { InventoryTable } from "@/components/tables/InventoryTable";
 import { SalesTable } from "@/components/tables/SalesTable";
 import { useMediaQuery } from "@mantine/hooks";
 
-export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<string | null>("users");
-  const ismobile = useMediaQuery("(max-width: 430px)");
+interface AdminDashboardProps {
+  readonly activeTab: string | null;
+  readonly setActiveTab: (tab: string | null) => void;
+}
+
+export default function AdminDashboard({ activeTab, setActiveTab }: AdminDashboardProps) {
+  const isMobile = useMediaQuery("(max-width: 430px)");
 
   return (
     <Container size="xl">
       <Tabs value={activeTab} onChange={setActiveTab} style={{ fontWeight: "bold" }}>
-        {!ismobile && (
+        {!isMobile && (
           <Tabs.List grow>
             <Tabs.Tab value="users" leftSection={<IconUsers size="1rem" />}>
               Usuarios

@@ -1,14 +1,13 @@
-import { ReactNode } from "react";
+import { useState } from "react";
 import { AppShell, Group, Title, Menu, Burger } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
-interface CommonLayoutProps {
-  readonly children: ReactNode;
-}
+import AdminDashboard from "@/app/dashboard/admin/page";
 
-export function CommonLayout({ children }: CommonLayoutProps) {
+export function CommonLayout() {
   const isMobile = useMediaQuery("(max-width: 425px)");
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<string | null>("users");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -27,17 +26,19 @@ export function CommonLayout({ children }: CommonLayoutProps) {
               <Burger></Burger>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item onClick={() => console.log("Usuarios")}>Usuarios</Menu.Item>
-              <Menu.Item onClick={() => console.log("Eventos")}>Eventos</Menu.Item>
-              <Menu.Item onClick={() => console.log("Invitados")}>Invitados</Menu.Item>
-              <Menu.Item onClick={() => console.log("Inventario")}>Inventario</Menu.Item>
-              <Menu.Item onClick={() => console.log("Ventas")}>Ventas</Menu.Item>
+              <Menu.Item onClick={() => setActiveTab("users")}>Usuarios</Menu.Item>
+              <Menu.Item onClick={() => setActiveTab("events")}>Eventos</Menu.Item>
+              <Menu.Item onClick={() => setActiveTab("guests")}>Invitados</Menu.Item>
+              <Menu.Item onClick={() => setActiveTab("inventory")}>Inventario</Menu.Item>
+              <Menu.Item onClick={() => setActiveTab("sales")}>Ventas</Menu.Item>
               <Menu.Item onClick={handleLogout}>Cerrar sesión</Menu.Item>
             </Menu.Dropdown>
           </Menu>
         </Group>
       </AppShell.Header>
-      <AppShell.Main style={mainStyle}>{children}</AppShell.Main>
+      <AppShell.Main style={mainStyle}>
+        <AdminDashboard activeTab={activeTab} setActiveTab={setActiveTab} />
+      </AppShell.Main>
     </AppShell>
   );
 }
