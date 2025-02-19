@@ -21,11 +21,11 @@ export function CommonLayout({ children }: CommonLayoutProps) {
               <Burger></Burger>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item onClick={() => console.log("Desloguear")}>Usuarios</Menu.Item>
-              <Menu.Item onClick={() => console.log("Desloguear")}>Eventos</Menu.Item>
-              <Menu.Item onClick={() => console.log("Desloguear")}>Invitados</Menu.Item>
-              <Menu.Item onClick={() => console.log("Desloguear")}>Inventario</Menu.Item>
-              <Menu.Item onClick={() => console.log("Desloguear")}>Ventas</Menu.Item>
+              <Menu.Item onClick={() => console.log("Usuarios")}>Usuarios</Menu.Item>
+              <Menu.Item onClick={() => console.log("Eventos")}>Eventos</Menu.Item>
+              <Menu.Item onClick={() => console.log("Invitados")}>Invitados</Menu.Item>
+              <Menu.Item onClick={() => console.log("Inventario")}>Inventario</Menu.Item>
+              <Menu.Item onClick={() => console.log("Ventas")}>Ventas</Menu.Item>
               <Menu.Item onClick={() => console.log("Desloguear")}>Desloguear</Menu.Item>
             </Menu.Dropdown>
           </Menu>
@@ -43,6 +43,7 @@ const titleStyle = {
   marginBottom: "1.5rem",
   fontFamily: "Arial Black",
   justifySelf: "center",
+  marginLeft: "2%",
 };
 
 const mainStyle = {
@@ -51,4 +52,5 @@ const mainStyle = {
   alignItems: "center",
   height: "calc(100vh - 30px)", // Adjust height based on header height
   paddingTop: "60px", // Adjust padding based on header height
+  marginTop: "60px", // Adjust padding based on header height
 };

@@ -24,7 +24,7 @@ export default function CreateTicket() {
   }, []);
 
   const fetchUsers = useCallback(async () => {
-    const response = await fetch("/api/users?role=user");
+    const response = await fetch("/api/users?role=usuario");
     const data = await response.json();
     setUsers(data);
   }, []);

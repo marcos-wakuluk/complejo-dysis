@@ -37,6 +37,22 @@ export async function PUT(req: Request) {
   }
 }
 
+export async function POST(req: Request) {
+  // try {
+  // await connectDB();
+
+  const body = await req.json();
+  console.log("🚀 ~ POST ~ body:", body);
+  //   const newUser = new User(body);
+  //   const savedUser = await newUser.save();
+
+  //   return NextResponse.json(savedUser);
+  // } catch (error) {
+  //   console.error(error);
+  //   return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+  // }
+}
+
 export async function DELETE(req: Request) {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");

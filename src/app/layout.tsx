@@ -8,7 +8,8 @@ import { Providers } from "./providers";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
-  const isLoginPage = pathname === "/";
+  const noLayoutPages = ["/", "/register", "/forgot-password"];
+  const isNoLayoutPage = noLayoutPages.includes(pathname);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -16,7 +17,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ColorSchemeScript defaultColorScheme="dark" />
       </head>
       <body>
-        <Providers>{isLoginPage ? children : <CommonLayout>{children}</CommonLayout>}</Providers>
+        <Providers>{isNoLayoutPage ? children : <CommonLayout>{children}</CommonLayout>}</Providers>
       </body>
     </html>
   );

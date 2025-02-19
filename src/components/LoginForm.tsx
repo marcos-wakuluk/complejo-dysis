@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
-import { TextInput, PasswordInput, Paper, Title, Container, Button, Stack } from "@mantine/core";
+import { TextInput, PasswordInput, Paper, Title, Container, Button, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import LoadingAnimation from "./LoadingAnimation";
 
@@ -83,7 +83,7 @@ export function LoginForm() {
             <Stack>
               <TextInput label="Email" required {...form.getInputProps("email")} />
 
-              <PasswordInput label="Password" required {...form.getInputProps("password")} />
+              <PasswordInput label="Contraseña" required {...form.getInputProps("password")} />
 
               <Button type="submit" loading={loading}>
                 Iniciar sesión
@@ -91,6 +91,10 @@ export function LoginForm() {
             </Stack>
             {error && <div className="error-message">{error}</div>}
           </form>
+          <div style={{ marginTop: "20px", textAlign: "center" }}>
+            <Text onClick={() => router.push("/register")}>Crear una cuenta</Text>
+            <Text onClick={() => router.push("/forgot-password")}>Recuperar contraseña</Text>
+          </div>
         </Paper>
       </Container>
     </div>
