@@ -12,7 +12,7 @@ import { useMediaQuery } from "@mantine/hooks";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<string | null>("users");
-  const ismobile = useMediaQuery("(max-width: 425px)");
+  const ismobile = useMediaQuery("(max-width: 430px)");
 
   return (
     <Container size="xl">

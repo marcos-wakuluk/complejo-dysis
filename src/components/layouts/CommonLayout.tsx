@@ -1,13 +1,19 @@
 import { ReactNode } from "react";
 import { AppShell, Group, Title, Menu, Burger } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-
+import { useRouter } from "next/navigation";
 interface CommonLayoutProps {
   readonly children: ReactNode;
 }
 
 export function CommonLayout({ children }: CommonLayoutProps) {
   const isMobile = useMediaQuery("(max-width: 425px)");
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };
 
   return (
     <AppShell padding="md">
@@ -26,7 +32,7 @@ export function CommonLayout({ children }: CommonLayoutProps) {
               <Menu.Item onClick={() => console.log("Invitados")}>Invitados</Menu.Item>
               <Menu.Item onClick={() => console.log("Inventario")}>Inventario</Menu.Item>
               <Menu.Item onClick={() => console.log("Ventas")}>Ventas</Menu.Item>
-              <Menu.Item onClick={() => console.log("Desloguear")}>Desloguear</Menu.Item>
+              <Menu.Item onClick={handleLogout}>Cerrar sesión</Menu.Item>
             </Menu.Dropdown>
           </Menu>
         </Group>
