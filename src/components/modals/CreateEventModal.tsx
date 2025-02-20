@@ -44,7 +44,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({ isOpen, onClose, on
       status: "Activo",
       tandas: formattedTandas,
     };
-    console.log("🚀 ~ handleSave ~ newEvent:", newEvent);
+
     onSave(newEvent);
     onClose();
   };

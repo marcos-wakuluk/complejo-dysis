@@ -109,15 +109,11 @@ const Register = () => {
             <Button type="submit">Registrar</Button>
           </Center>
         </form>
-        <Center mt="md">
-          <Text style={{ fontSize: "small" }}>
-            ¿Ya tenes cuenta?{" "}
-            <Text
-              component="span"
-              style={{ fontSize: "small", fontWeight: "bold", cursor: "pointer" }}
-              onClick={() => router.push("/")}
-            >
-              Iniciar sesion
+        <Center>
+          <Text style={{ fontSize: 12 }}>
+            ¿Ya tenes una cuenta?{" "}
+            <Text component="span" style={{ cursor: "pointer", color: "#00bfff" }} onClick={() => router.push("/")}>
+              Ingresar
             </Text>
           </Text>
         </Center>

@@ -21,7 +21,6 @@ export async function POST(req: Request) {
     const user = await User.findOne({ email });
 
     if (!user) {
-      console.log("User not found");
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
 
@@ -35,7 +34,6 @@ export async function POST(req: Request) {
     //     await user.save();
     //     isPasswordMatch = true;
     //   } else {
-    //     console.log("Password does not match");
     //     return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     //   }
     // }

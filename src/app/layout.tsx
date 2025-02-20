@@ -8,8 +8,8 @@ import { Providers } from "./providers";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname();
-  const noLayoutPages = ["/", "/register", "/forgot-password"];
-  const isNoLayoutPage = noLayoutPages.includes(pathname);
+  const noLayoutPages = ["/", "/register", "/forgot-password", "/reset-password"];
+  const isNoLayoutPage = noLayoutPages.includes(pathname) || pathname.startsWith("/reset-password");
 
   return (
     <html lang="en" suppressHydrationWarning>

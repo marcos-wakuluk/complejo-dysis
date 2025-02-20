@@ -28,17 +28,27 @@ const userSchema = new mongoose.Schema(
     },
     date: {
       type: Date,
-      required: true,
+      required: false,
     },
     role: {
       type: String,
-      enum: ["admin", "promotor", "cajero"],
-      default: "cajero",
+      enum: ["administrador", "promotor", "cajero", "usuario"],
+      default: "usuario",
       required: true,
     },
     password: {
       type: String,
       required: true,
+    },
+    resetToken: {
+      token: {
+        type: String,
+        required: false,
+      },
+      expires: {
+        type: Date,
+        required: false,
+      },
     },
   },
   {

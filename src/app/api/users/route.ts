@@ -37,15 +37,12 @@ export async function PUT(req: Request) {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST() {
   // try {
   // await connectDB();
-
-  const body = await req.json();
-  console.log("🚀 ~ POST ~ body:", body);
+  // const body = await req.json();
   //   const newUser = new User(body);
   //   const savedUser = await newUser.save();
-
   //   return NextResponse.json(savedUser);
   // } catch (error) {
   //   console.error(error);

@@ -11,7 +11,7 @@ const RecoveryPassword = () => {
 
   const handleRecoveryPassword = async () => {
     try {
-      const response = await fetch("/api/users/recovery-password", {
+      const response = await fetch("/api/email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,17 +34,13 @@ const RecoveryPassword = () => {
           Recuperar Contraseña
         </Text>
         {error && <Text c="red">{error}</Text>}
-        <TextInput label="Email" value={email} onChange={(e) => setEmail(e.target.value)} mb="md" />
+        <TextInput label="Email" value={email} onChange={(e) => setEmail(e.target.value)} mb="md" required />
         <Button onClick={handleRecoveryPassword}>Recuperar</Button>
-        <Center mt="md">
-          <Text style={{ fontSize: "small" }}>
-            ¿Ya tenes cuenta?{" "}
-            <Text
-              component="span"
-              style={{ fontSize: "small", fontWeight: "bold", cursor: "pointer" }}
-              onClick={() => router.push("/")}
-            >
-              Iniciar sesion
+        <Center>
+          <Text style={{ fontSize: 12 }}>
+            ¿Ya tenes una cuenta?{" "}
+            <Text component="span" style={{ cursor: "pointer", color: "#00bfff" }} onClick={() => router.push("/")}>
+              Ingresar
             </Text>
           </Text>
         </Center>
