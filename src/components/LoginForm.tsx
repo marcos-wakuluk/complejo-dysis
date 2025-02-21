@@ -59,6 +59,12 @@ export function LoginForm() {
           case "cajero":
             router.push("/dashboard/cajero");
             break;
+          case "portero":
+            router.push("/dashboard/portero");
+            break;
+          case "barman":
+            router.push("/dashboard/barman");
+            break;
           default:
             alert("Unknown role");
         }
