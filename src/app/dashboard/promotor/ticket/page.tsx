@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Container, TextInput, Button, Title, Select, Stack, Center } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
 
 export default function CreateTicket() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -31,7 +32,7 @@ export default function CreateTicket() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("token");
+      const token = Cookies.get("token");
 
       if (token) {
         const decoded = jwtDecode<{ userId: string }>(token);

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
 import { TextInput, PasswordInput, Paper, Title, Container, Button, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import LoadingAnimation from "./LoadingAnimation";
@@ -43,7 +44,7 @@ export function LoginForm() {
 
       if (response.ok) {
         const decodedToken = jwtDecode<{ role: string }>(data.token);
-        localStorage.setItem("token", data.token);
+        Cookies.set("token", data.token, { expires: 7 });
 
         switch (decodedToken.role) {
           case "administrador":
@@ -54,6 +55,9 @@ export function LoginForm() {
             break;
           case "promotor":
             router.push("/dashboard/promotor");
+            break;
+          case "cajero":
+            router.push("/dashboard/cajero");
             break;
           default:
             alert("Unknown role");

@@ -4,14 +4,15 @@ import { Container, Card, SimpleGrid, Text, Title } from "@mantine/core";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 type DecodedToken = {
   name: string;
 };
 
 export default function PromotorDashboard() {
-  const [user, setUser] = useState<DecodedToken | null>(null);
   const router = useRouter();
+  const [user, setUser] = useState<DecodedToken | null>(null);
 
   const handleCreateTicket = () => {
     router.push("/dashboard/promotor/ticket");
@@ -21,8 +22,13 @@ export default function PromotorDashboard() {
     router.push("/dashboard/promotor/ventas");
   };
 
+  const handleCompetencia = () => {
+    router.push("/dashboard/promotor/competencia");
+  };
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
+
     if (token) {
       const decoded = jwtDecode<DecodedToken>(token);
       setUser(decoded);
@@ -54,7 +60,7 @@ export default function PromotorDashboard() {
             Ver Tickets
           </Text>
         </Card>
-        <Card shadow="sm" padding="lg" radius="md" withBorder>
+        <Card shadow="sm" padding="lg" radius="md" withBorder onClick={handleCompetencia} style={{ cursor: "pointer" }}>
           <Text size="lg" w={500}>
             Competencia
           </Text>

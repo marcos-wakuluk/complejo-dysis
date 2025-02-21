@@ -1,17 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppShell, Group, Title, Menu, Burger } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
 import AdminDashboard from "@/app/dashboard/admin/page";
+import PromotorDashboard from "@/app/dashboard/promotor/page";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+
+type DecodedToken = {
+  role: string;
+};
 
 export function CommonLayout() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<string | null>("users");
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      const decoded = jwtDecode<DecodedToken>(token);
+      setRole(decoded.role);
+    } else {
+      router.push("/");
+    }
+  }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    Cookies.remove("token");
     router.push("/");
+  };
+
+  const renderDashboard = () => {
+    switch (role) {
+      case "administrador":
+        return <AdminDashboard activeTab={activeTab} setActiveTab={setActiveTab} />;
+      case "promotor":
+        return <PromotorDashboard />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -36,9 +65,7 @@ export function CommonLayout() {
           </Menu>
         </Group>
       </AppShell.Header>
-      <AppShell.Main style={mainStyle}>
-        <AdminDashboard activeTab={activeTab} setActiveTab={setActiveTab} />
-      </AppShell.Main>
+      <AppShell.Main style={mainStyle}>{renderDashboard()}</AppShell.Main>
     </AppShell>
   );
 }

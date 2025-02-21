@@ -5,6 +5,7 @@ import { Container, Table, Button, Collapse, Title } from "@mantine/core";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 interface Event {
   _id: string;
@@ -32,7 +33,7 @@ export default function Ventas() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("token");
+      const token = Cookies.get("token");
 
       if (token) {
         const decoded = jwtDecode<{ userId: string }>(token);
