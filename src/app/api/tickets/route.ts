@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 
     const ticket = new Ticket(ticketData);
 
-    const qrData = JSON.stringify({ ticketId: ticket._id, eventId: event, tanda });
+    const qrData = JSON.stringify({ ticketId: ticket._id, eventId: event, tanda, price, client });
     ticket.qrCode = await QRCode.toDataURL(qrData);
 
     await ticket.save();
