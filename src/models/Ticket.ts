@@ -29,6 +29,24 @@ const TicketSchema = new Schema(
       type: Date,
       default: Date.now,
     },
+    qrCode: {
+      type: String,
+    },
+    used: {
+      type: Boolean,
+      default: false,
+    },
+    scanAt: {
+      type: Date,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "used", "canceled"],
+      default: "pending",
+    },
+    deviceId: {
+      type: String,
+    },
   },
   {
     versionKey: false,

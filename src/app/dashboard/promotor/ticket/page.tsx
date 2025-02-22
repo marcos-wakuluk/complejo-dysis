@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 
 export default function CreateTicket() {
+  const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
   const [events, setEvents] = useState<{ _id: string; name: string; tandas: { date: string; price: number }[] }[]>([]);
   const [users, setUsers] = useState<{ _id: string; name: string; dni: string; lastname: string }[]>([]);
@@ -16,7 +17,9 @@ export default function CreateTicket() {
   const [client, setClient] = useState("");
   const [tanda, setTanda] = useState<{ date: string; price: number } | null>(null);
   const [tandaIndex, setTandaIndex] = useState<number | null>(null);
-  const router = useRouter();
+  const [ticket, setTicket] = useState<{ qrCode: string } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const fetchEvents = useCallback(async () => {
     const response = await fetch("/api/events?status=Activo");
@@ -52,7 +55,7 @@ export default function CreateTicket() {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const dni = event.currentTarget.value;
       setDni(dni);
-      const user = users.find((user) => user.dni === dni);
+      const user = users.find((user) => user.dni == dni);
       if (user) {
         setUserName(`${user.name} ${user.lastname}`);
         setClient(user._id);
@@ -94,19 +97,38 @@ export default function CreateTicket() {
   );
 
   const handleSubmit = useCallback(async () => {
+    setLoading(true);
+    setError("");
+
     try {
-      await fetch("/api/tickets", {
+      const response = await fetch("/api/tickets", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ event, user: userId, client, tanda: tandaIndex, price: tanda?.price }),
+        body: JSON.stringify({
+          event,
+          user: userId,
+          client,
+          tanda: tandaIndex,
+          price: tanda?.price,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error("Error al generar el ticket");
+      }
+
+      const data = await response.json();
+      setTicket(data);
       setDni("");
       setUserName("");
       setClient("");
     } catch (error) {
       console.error(error);
+      setError("Hubo un problema al generar el ticket.");
+    } finally {
+      setLoading(false);
     }
   }, [event, userId, client, tanda, tandaIndex]);
 
@@ -116,34 +138,55 @@ export default function CreateTicket() {
 
   const eventOptions = useMemo(() => events.map((event) => ({ value: event._id, label: event.name })), [events]);
 
+  useEffect(() => {
+    if (ticket) {
+      const timer = setTimeout(() => {
+        setTicket(null);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [ticket]);
+
   return (
     <Container>
-      <Title order={2} mb="lg">
-        Crear Ticket
-      </Title>
-      <Stack>
-        <Select
-          label="Evento"
-          placeholder="Seleccione un evento"
-          data={eventOptions}
-          value={event}
-          onChange={handleEventChange}
-        />
-        <Center mt="lg" display="flex" flex="space-between">
-          <TextInput label="Tanda" value={tandaIndex ?? ""} readOnly mr={10} />
-          <TextInput label="Precio" value={`$${tanda?.price ?? ""}`} readOnly />
-        </Center>
-        <TextInput label="DNI" placeholder="Ingrese su DNI" value={dni} onChange={handleDniChange} />
-        <TextInput label="Nombre" placeholder="Nombre del usuario" value={userName} readOnly />
-      </Stack>
-      <Center mt="lg" display="flex" flex="space-between">
-        <Button onClick={handleBack} variant="outline" fullWidth mr={10}>
-          Atrás
-        </Button>
-        <Button onClick={handleSubmit} fullWidth disabled={!event || !dni || !userName}>
-          Crear
-        </Button>
-      </Center>
+      {ticket ? (
+        <>
+          <Title order={3}>🎟️ Ticket Generado Correctamente</Title>
+          {/* <Image src={ticket?.qrCode} alt="Código QR" /> */}
+        </>
+      ) : (
+        <>
+          <Title order={2} mb="lg">
+            Crear Ticket
+          </Title>
+          <Stack>
+            <Select
+              label="Evento"
+              placeholder="Seleccione un evento"
+              data={eventOptions}
+              value={event}
+              onChange={handleEventChange}
+            />
+            <Center mt="lg" display="flex" flex="space-between">
+              <TextInput label="Tanda" value={tandaIndex ?? ""} readOnly mr={10} />
+              <TextInput label="Precio" value={`$${tanda?.price ?? ""}`} readOnly />
+            </Center>
+            <TextInput label="DNI" placeholder="Ingrese su DNI" value={dni} onChange={handleDniChange} />
+            <TextInput label="Nombre" placeholder="Nombre del usuario" value={userName} readOnly />
+          </Stack>
+          <Center mt="lg" display="flex" flex="space-between">
+            <Button onClick={handleBack} variant="outline" fullWidth mr={10}>
+              Atrás
+            </Button>
+            <Button onClick={handleSubmit} fullWidth disabled={!event || !dni || !userName}>
+              {loading ? "Generando..." : "Generar Ticket"}
+            </Button>
+          </Center>
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
+        </>
+      )}
     </Container>
   );
 }

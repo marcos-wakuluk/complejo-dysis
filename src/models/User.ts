@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
     },
     lastname: {
       type: String,
-      required: true,
+      required: false,
     },
     dni: {
       type: String,
@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
       lowercase: true,
     },
@@ -49,6 +49,10 @@ const userSchema = new mongoose.Schema(
         type: Date,
         required: false,
       },
+    },
+    tickets: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Ticket",
     },
   },
   {

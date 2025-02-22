@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Ticket from "@/models/Ticket";
+import User from "@/models/User";
+import QRCode from "qrcode";
 
 export async function GET(req: Request) {
   try {
@@ -28,15 +30,40 @@ export async function POST(req: Request) {
     await connectDB();
 
     const body = await req.json();
+    const { event, client, tanda, price, user } = body;
+
+    if (!event || !client || !tanda || !price || !user) {
+      return NextResponse.json({ error: "Datos faltantes" }, { status: 400 });
+    }
 
     const ticketData = {
-      ...body,
+      event,
+      client,
+      tanda,
+      price,
+      user,
       createdAt: new Date().toISOString(),
+      used: false,
+      scanAt: null,
+      status: "pending",
+      deviceId: null,
     };
 
     const ticket = new Ticket(ticketData);
 
+    const qrData = JSON.stringify({ ticketId: ticket._id, eventId: event, tanda });
+    ticket.qrCode = await QRCode.toDataURL(qrData);
+
     await ticket.save();
+
+    const userDoc = await User.findById(client);
+
+    if (!userDoc) {
+      return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 });
+    }
+
+    userDoc.tickets.push(ticket._id);
+    await userDoc.save();
 
     return NextResponse.json(ticket);
   } catch (error) {

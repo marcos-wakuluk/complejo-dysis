@@ -7,9 +7,10 @@ import { IconCheck } from "@tabler/icons-react";
 interface ScannerProps {
   onScan: (decodedText: string) => void;
   onError: (error: Error) => void;
+  event: { value: string; label: string };
 }
 
-export default function Scanner({ onScan, onError }: ScannerProps) {
+export default function Scanner({ onScan, onError, event }: ScannerProps) {
   const [data, setData] = useState<string | null>("Sin resultado");
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const [isValid, setIsValid] = useState<boolean | null>(null);
@@ -40,29 +41,53 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
         onScan(decodedText);
         validateTicket(decodedText);
       };
-      const qrCodeErrorCallback = (errorMessage: string) => {
-        console.error(errorMessage);
+      const qrCodeErrorCallback = () => {
+        // No registrar el error en la consola
       };
 
       scannerRef.current = new Html5QrcodeScanner("reader", config, false);
       scannerRef.current.render(qrCodeSuccessCallback, qrCodeErrorCallback);
     };
 
-    const validateTicket = (decodedText: string) => {
-      console.log("🚀 ~ validateTicket ~ decodedText:", decodedText);
-      // Aquí puedes agregar la lógica para validar el ticket
-      // Por ejemplo, puedes hacer una llamada a una API para verificar si el ticket es válido
-      const isValid = true; // Reemplaza esto con la lógica real de validación
+    const validateTicket = async (decodedText: string) => {
+      try {
+        const ticketData = JSON.parse(decodedText);
+        const { ticketId, eventId } = ticketData;
 
-      if (isValid) {
-        setValidationMessage("Ticket válido");
+        if (!ticketId || !eventId) {
+          setValidationMessage("QR inválido");
+          setIsValid(false);
+          return;
+        }
+
+        const response = await fetch(`/api/tickets/validate?ticketId=${ticketId}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          setValidationMessage("Error validando el ticket");
+          setIsValid(false);
+          return;
+        }
+
+        if (data.used) {
+          setValidationMessage("❌ Ticket ya utilizado");
+          setIsValid(false);
+          return;
+        }
+
+        if (data.event !== event.value) {
+          setValidationMessage("❌ Ticket no corresponde a este evento");
+          setIsValid(false);
+          return;
+        }
+
+        setValidationMessage("✅ Ticket válido");
         setIsValid(true);
-      } else {
-        setValidationMessage("Ticket inválido");
+      } catch (error) {
+        console.error("Error al validar el ticket:", error);
+        setValidationMessage("Error al procesar el ticket");
         setIsValid(false);
       }
-
-      // Mantener el escáner abierto
     };
 
     checkCameraPermission();
@@ -74,10 +99,10 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
         });
       }
     };
-  }, [onScan, onError]);
+  }, [onScan, onError, event.value]);
 
   return (
-    <div style={{ padding: "20px", borderRadius: "8px" }}>
+    <div style={{ padding: "20px", borderRadius: "8px", position: "relative" }}>
       <h2>Escanear Código QR</h2>
       <div id="reader" style={{ width: "100%" }}></div>
       <p>{data}</p>

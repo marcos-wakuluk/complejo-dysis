@@ -23,6 +23,7 @@
     "mongodb": "^6.13.0",
     "mongoose": "^8.9.6",
     "next": "15.1.6",
+    "qrcode": "^1.5.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "resend": "^4.1.2"
@@ -32,6 +33,7 @@
     "@types/js-cookie": "^3.0.6",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^20",
+    "@types/qrcode": "^1.5.5",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "eslint": "^9.19.0",

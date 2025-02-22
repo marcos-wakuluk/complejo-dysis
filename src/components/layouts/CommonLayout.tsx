@@ -18,7 +18,7 @@ export function CommonLayout({ children }: Readonly<{ children: ReactNode }>) {
       <AppShell.Header>
         <Group justify="space-between" style={{ width: "100%" }} display="flex">
           <Title order={isMobile ? 4 : 2} style={titleStyle} mt="sm">
-            Marcio Wakuluk Producciones
+            Producciones
           </Title>
           <Menu>
             <Menu.Target>
