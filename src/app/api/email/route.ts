@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: "Complejo Dysis <onboarding@resend.dev>",
+      from: "Marcio Wakuluk Producciones <onboarding@resend.dev>",
       to: email,
       subject: "Restablecer contraseña",
       react: await EmailTemplate({ name: name, resetLink: resetLink }),

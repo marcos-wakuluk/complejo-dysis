@@ -86,7 +86,7 @@ export function LoginForm() {
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       <Container size={420} my={40}>
-        <Title ta="center">Bienvenido a Complejo Dysis</Title>
+        <Title ta="center">Bienvenido a Marcio Wakuluk Producciones</Title>
 
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
           <form onSubmit={form.onSubmit(handleSubmit)}>

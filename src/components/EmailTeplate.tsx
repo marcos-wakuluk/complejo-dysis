@@ -7,8 +7,8 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({ name, re
   <div>
     <h1>Hola, {name}!</h1>
     <p>
-      Hemos recibido una solicitud para restablecer tu contraseña en Complejo Dysis. Puedes restablecer tu contraseña
-      haciendo clic en el siguiente enlace:
+      Hemos recibido una solicitud para restablecer tu contraseña en Marcio Wakuluk Producciones. Puedes restablecer tu
+      contraseña haciendo clic en el siguiente enlace:
     </p>
     <a href={resetLink} style={{ color: "blue", textDecoration: "underline" }}>
       Restablecer contraseña
@@ -17,7 +17,7 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({ name, re
     <p>
       Saludos,
       <br />
-      El equipo de Complejo Dysis
+      El equipo de Marcio Wakuluk Producciones
     </p>
   </div>
 );
