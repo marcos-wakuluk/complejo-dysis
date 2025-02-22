@@ -8,9 +8,23 @@ export async function GET(req: Request) {
 
     const url = new URL(req.url);
     const role = url.searchParams.get("role");
+    const id = url.searchParams.get("id");
 
-    const query = role ? { role } : {};
-    const users = await User.find(query);
+    let users;
+    if (id) {
+      users = await User.findById(id).populate({
+        path: "tickets",
+        populate: {
+          path: "event",
+        },
+      });
+      if (!users) {
+        return NextResponse.json({ error: "User not found" }, { status: 404 });
+      }
+    } else {
+      const query = role ? { role } : {};
+      users = await User.find(query);
+    }
 
     return NextResponse.json(users);
   } catch (error) {

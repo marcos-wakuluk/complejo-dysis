@@ -50,7 +50,7 @@ export default function Ventas() {
     };
 
     const fetchTickets = async () => {
-      const response = await fetch(`/api/tickets?userId=${userId}`);
+      const response = await fetch(`/api/tickets?userId=${userId}&role=promotor`);
       const data = await response.json();
       setTickets(data);
     };
