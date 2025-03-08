@@ -125,7 +125,7 @@ export default function CreateTicket() {
       setUserName("");
       setClient("");
     } catch (error) {
-      console.error(error);
+      console.log(error);
       setError("Hubo un problema al generar el ticket.");
     } finally {
       setLoading(false);

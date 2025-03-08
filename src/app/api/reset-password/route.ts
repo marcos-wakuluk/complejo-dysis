@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
     return Response.json({ message: "Contraseña restablecida" });
   } catch (error) {
-    console.error("Error al restablecer la contraseña:", error);
+    console.log("Error al restablecer la contraseña:", error);
     return Response.json({ error: (error as Error).message }, { status: 500 });
   }
 }

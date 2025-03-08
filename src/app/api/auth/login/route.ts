@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     // Responder con el token JWT
     return NextResponse.json({ token });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to login" }, { status: 500 });
   }
 }

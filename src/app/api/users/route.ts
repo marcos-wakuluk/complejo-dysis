@@ -42,7 +42,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(users);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
   }
 }
@@ -60,7 +60,7 @@ export async function PUT(req: Request) {
 
     return NextResponse.json(updatedUser);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
   }
 }
@@ -73,7 +73,7 @@ export async function POST() {
   //   const savedUser = await newUser.save();
   //   return NextResponse.json(savedUser);
   // } catch (error) {
-  //   console.error(error);
+  //   console.log(error);
   //   return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
   // }
 }
@@ -93,7 +93,7 @@ export async function DELETE(req: Request) {
 
     return NextResponse.json(deletedUser);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to delete user" }, { status: 500 });
   }
 }

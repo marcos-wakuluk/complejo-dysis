@@ -43,7 +43,7 @@ export default function Usuario() {
 
         setTickets(data);
       } catch (error) {
-        console.error(error);
+        console.log(error);
         setError((error as Error)?.message || "Failed to load tickets");
       } finally {
         setLoading(false);

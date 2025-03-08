@@ -10,7 +10,7 @@ export async function GET() {
 
     return NextResponse.json(inventoryItems);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to fetch inventory items" }, { status: 500 });
   }
 }
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(newItem, { status: 201 });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to create inventory item" }, { status: 500 });
   }
 }
@@ -43,7 +43,7 @@ export async function PUT(req: Request) {
 
     return NextResponse.json(updatedItem);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to update inventory item" }, { status: 500 });
   }
 }
@@ -61,7 +61,7 @@ export async function DELETE(req: Request) {
 
     return NextResponse.json({ message: "Inventory item deleted successfully" });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to delete inventory item" }, { status: 500 });
   }
 }

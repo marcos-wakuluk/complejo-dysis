@@ -38,7 +38,7 @@ export function UsersTable() {
 
       setUsers(data);
     } catch (error) {
-      console.error("Failed to fetch users:", error);
+      console.log("Failed to fetch users:", error);
     } finally {
       setLoading(false);
     }
@@ -99,7 +99,7 @@ export function UsersTable() {
       setDeleteModalOpened(false);
       setUserToDelete(null);
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.log("Error deleting user:", error);
     }
   }, [userToDelete]);
 
@@ -129,7 +129,7 @@ export function UsersTable() {
       setOpened(false);
       setEditingUser(null);
     } catch (error) {
-      console.error("Error saving user:", error);
+      console.log("Error saving user:", error);
     }
   }, []);
 

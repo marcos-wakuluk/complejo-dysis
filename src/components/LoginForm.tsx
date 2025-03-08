@@ -72,7 +72,7 @@ export function LoginForm() {
         setError(data.message || "Invalid email or password");
       }
     } catch (error) {
-      console.error("Login error", error);
+      console.log("Login error", error);
       setError("An error occurred during login");
     } finally {
       setLoading(false);

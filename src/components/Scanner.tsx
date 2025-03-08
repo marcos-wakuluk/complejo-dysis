@@ -7,10 +7,11 @@ import { IconCheck } from "@tabler/icons-react";
 interface ScannerProps {
   onScan: (decodedText: string) => void;
   onError: (error: Error) => void;
+  onValidation: (message: string, isValid: boolean) => void;
   event: { value: string; label: string };
 }
 
-export default function Scanner({ onScan, onError, event }: ScannerProps) {
+export default function Scanner({ onScan, onError, onValidation, event }: ScannerProps) {
   const [data, setData] = useState<string | null>("Sin resultado");
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const [isValid, setIsValid] = useState<boolean | null>(null);
@@ -28,7 +29,7 @@ export default function Scanner({ onScan, onError, event }: ScannerProps) {
           localStorage.setItem("cameraPermission", "granted");
           startScanner();
         } catch (error) {
-          console.error("Camera permission denied", error);
+          console.log("Camera permission denied", error);
           onError(new Error("Camera permission denied"));
         }
       }
@@ -55,38 +56,43 @@ export default function Scanner({ onScan, onError, event }: ScannerProps) {
         const { ticketId, eventId } = ticketData;
 
         if (!ticketId || !eventId) {
-          setValidationMessage("QR inválido");
+          const message = "QR inválido";
+          setValidationMessage(message);
           setIsValid(false);
+          onValidation(message, false);
           return;
         }
 
-        const response = await fetch(`/api/tickets/validate?ticketId=${ticketId}`);
+        const response = await fetch(`/api/tickets`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ticketId, eventId }),
+        });
         const data = await response.json();
 
-        if (!response.ok) {
-          setValidationMessage("Error validando el ticket");
+        if (response.ok) {
+          const message = data.message;
+          console.log("Ticket validado:", data);
+          setValidationMessage(message);
+          setIsValid(true);
+          onValidation(message, true);
+          return;
+        } else {
+          const message = data.error;
+          console.log("Error al validar el ticket:", message);
+          setValidationMessage(message);
           setIsValid(false);
+          onValidation(message, false);
           return;
         }
-
-        if (data.used) {
-          setValidationMessage("❌ Ticket ya utilizado");
-          setIsValid(false);
-          return;
-        }
-
-        if (data.event !== event.value) {
-          setValidationMessage("❌ Ticket no corresponde a este evento");
-          setIsValid(false);
-          return;
-        }
-
-        setValidationMessage("✅ Ticket válido");
-        setIsValid(true);
       } catch (error) {
-        console.error("Error al validar el ticket:", error);
-        setValidationMessage("Error al procesar el ticket");
+        const message = "Error al procesar el ticket";
+        console.log("Error al validar el ticket:", error);
+        setValidationMessage(message);
         setIsValid(false);
+        onValidation(message, false);
       }
     };
 
@@ -95,11 +101,11 @@ export default function Scanner({ onScan, onError, event }: ScannerProps) {
     return () => {
       if (scannerRef.current) {
         scannerRef.current.clear().catch((error) => {
-          console.error("Failed to clear html5-qrcode scanner. ", error);
+          console.log("Failed to clear html5-qrcode scanner. ", error);
         });
       }
     };
-  }, [onScan, onError, event.value]);
+  }, [onScan, onError, onValidation, event.value]);
 
   return (
     <div style={{ padding: "20px", borderRadius: "8px", position: "relative" }}>

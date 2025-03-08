@@ -10,7 +10,7 @@ export async function GET() {
 
     return NextResponse.json(guests);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to fetch guests" }, { status: 500 });
   }
 }
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(guest);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to create guest" }, { status: 500 });
   }
 }
@@ -42,7 +42,7 @@ export async function PUT(req: Request) {
 
     return NextResponse.json(updatedGuest);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to update guest" }, { status: 500 });
   }
 }
@@ -62,7 +62,7 @@ export async function DELETE(req: Request) {
 
     return NextResponse.json(deletedGuest);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to delete guest" }, { status: 500 });
   }
 }

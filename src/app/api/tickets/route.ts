@@ -20,7 +20,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(tickets);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to fetch tickets" }, { status: 500 });
   }
 }
@@ -67,7 +67,42 @@ export async function POST(req: Request) {
 
     return NextResponse.json(ticket);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return NextResponse.json({ error: "Failed to create ticket" }, { status: 500 });
+  }
+}
+
+export async function PUT(req: Request) {
+  try {
+    await connectDB();
+
+    const body = await req.json();
+    const { ticketId, eventId } = body;
+
+    if (!ticketId || !eventId) {
+      return NextResponse.json({ error: "ID de ticket faltante" }, { status: 400 });
+    }
+
+    const ticket = await Ticket.findById(ticketId);
+
+    if (!ticket) {
+      return NextResponse.json({ error: "Ticket no encontrado" }, { status: 404 });
+    }
+
+    if (ticket.event.toString() !== eventId) {
+      return NextResponse.json({ error: "El ID del evento no corresponde con el ticket" }, { status: 400 });
+    }
+
+    if (ticket.used) {
+      return NextResponse.json({ error: "El ticket ya fue usado" }, { status: 400 });
+    }
+
+    ticket.used = true;
+    await ticket.save();
+
+    return NextResponse.json({ message: "Ticket válido", ticket });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ error: "Failed to update ticket" }, { status: 500 });
   }
 }

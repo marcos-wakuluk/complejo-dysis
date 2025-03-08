@@ -31,7 +31,7 @@ export function GuestsTable() {
       setGuest(data);
       setLoading(false);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     } finally {
       setLoading(false);
     }
