@@ -11,10 +11,9 @@ interface Ticket {
   event: {
     name: string;
   };
-  tanda: string;
   price: number;
   qrCode: string;
-  status: string;
+  tanda: string;
 }
 
 export default function Usuario() {
@@ -36,15 +35,16 @@ export default function Usuario() {
         const response = await fetch(`/api/users?id=${userId}`);
 
         if (!response.ok) {
-          throw new Error("Failed to fetch tickets");
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to fetch tickets");
         }
 
         const data = await response.json();
 
-        setTickets(data.tickets);
+        setTickets(data);
       } catch (error) {
         console.error(error);
-        setError("Failed to load tickets");
+        setError((error as Error)?.message || "Failed to load tickets");
       } finally {
         setLoading(false);
       }

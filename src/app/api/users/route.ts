@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
+import Ticket from "@/models/Ticket";
+import Event from "@/models/Event";
 
 export async function GET(req: Request) {
   try {
@@ -12,15 +14,27 @@ export async function GET(req: Request) {
 
     let users;
     if (id) {
-      users = await User.findById(id).populate({
-        path: "tickets",
-        populate: {
-          path: "event",
-        },
-      });
+      users = await User.findOne({ _id: id });
+
       if (!users) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
       }
+
+      const tickets = await Ticket.find({
+        _id: { $in: users.tickets },
+      });
+
+      const ticketsWithEventDetails = await Promise.all(
+        tickets.map(async (ticket) => {
+          const event = await Event.findById(ticket.event);
+          return {
+            ...ticket.toObject(),
+            event,
+          };
+        })
+      );
+
+      return NextResponse.json(ticketsWithEventDetails);
     } else {
       const query = role ? { role } : {};
       users = await User.find(query);

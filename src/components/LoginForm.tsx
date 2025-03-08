@@ -24,7 +24,7 @@ export function LoginForm() {
       password: "",
     },
     validate: {
-      email: (value: string) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      // email: (value: string) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
       password: (value) => (value.length < 6 ? "Password should be at least 6 characters" : null),
     },
   });
@@ -50,7 +50,7 @@ export function LoginForm() {
           case "administrador":
             router.push("/dashboard/admin");
             break;
-          case "user":
+          case "usuario":
             router.push("/dashboard/user");
             break;
           case "promotor":
@@ -86,7 +86,7 @@ export function LoginForm() {
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       <Container size={420} my={40}>
-        <Title ta="center">Bienvenido a Marcio Wakuluk Producciones</Title>
+        <Title ta="center">Marcio Wakuluk Producciones</Title>
 
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
           <form onSubmit={form.onSubmit(handleSubmit)}>
