@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@mantine/form";
-import { Button, Card, Text, Group, TextInput, Center } from "@mantine/core";
-
+import { Button, Card, Text, Group, TextInput, Center, PasswordInput } from "@mantine/core";
 interface RegisterFormValues {
   name: string;
   lastname: string;
@@ -61,7 +60,7 @@ const Register = () => {
         throw new Error("Failed to register");
       }
 
-      router.push("/login");
+      router.push("/");
     } catch (error) {
       setError((error as Error).message);
     }
@@ -81,7 +80,13 @@ const Register = () => {
           </Group>
           <Group grow mb="md">
             <TextInput label="DNI" {...form.getInputProps("dni")} withAsterisk required />
-            <TextInput label="Fecha de nacimiento" {...form.getInputProps("birthday")} withAsterisk required />
+            <TextInput
+              type="date"
+              label="Fecha de nacimiento"
+              {...form.getInputProps("birthday")}
+              withAsterisk
+              required
+            />
           </Group>
           <TextInput label="Email" {...form.getInputProps("email")} mb="md" withAsterisk required />
           <Group grow mb="md">
@@ -89,7 +94,7 @@ const Register = () => {
             <TextInput label="Instagram" {...form.getInputProps("instagram")} />
           </Group>
           <TextInput label="Foto" {...form.getInputProps("image")} mb="md" />
-          <TextInput
+          <PasswordInput
             label="Contraseña"
             type="password"
             {...form.getInputProps("password")}
@@ -97,7 +102,7 @@ const Register = () => {
             withAsterisk
             required
           />
-          <TextInput
+          <PasswordInput
             label="Confirmar Contraseña"
             type="password"
             {...form.getInputProps("confirmPassword")}

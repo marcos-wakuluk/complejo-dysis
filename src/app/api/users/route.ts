@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
 import Ticket from "@/models/Ticket";
 import Event from "@/models/Event";
+import bcrypt from "bcryptjs";
 
 export async function GET(req: Request) {
   try {
@@ -65,17 +66,43 @@ export async function PUT(req: Request) {
   }
 }
 
-export async function POST() {
-  // try {
-  // await connectDB();
-  // const body = await req.json();
-  //   const newUser = new User(body);
-  //   const savedUser = await newUser.save();
-  //   return NextResponse.json(savedUser);
-  // } catch (error) {
-  //   console.log(error);
-  //   return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
-  // }
+export async function POST(req: NextRequest) {
+  try {
+    await connectDB();
+
+    const body = await req.json();
+    const { name, lastname, dni, birthday, email, phone, instagram, image, password } = body;
+
+    if (!name || !lastname || !dni || !birthday || !email || !phone || !password) {
+      return NextResponse.json({ error: "Datos faltantes" }, { status: 400 });
+    }
+
+    const existingUser = await User.findOne({ dni });
+    if (existingUser) {
+      return NextResponse.json({ error: "El DNI ya está registrado" }, { status: 400 });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      name,
+      lastname,
+      dni,
+      birthday,
+      email,
+      phone,
+      instagram,
+      image,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+
+    return NextResponse.json({ message: "Usuario registrado exitosamente" });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ error: "Error al registrar el usuario" }, { status: 500 });
+  }
 }
 
 export async function DELETE(req: Request) {

@@ -102,8 +102,34 @@ export function LoginForm() {
             {error && <div className="error-message">{error}</div>}
           </form>
           <div style={{ marginTop: "20px", textAlign: "center" }}>
-            <Text onClick={() => router.push("/register")}>Crear una cuenta</Text>
-            <Text onClick={() => router.push("/forgot-password")}>Recuperar contraseña</Text>
+            <Text
+              style={{ cursor: "pointer", color: "#B5B5B5" }}
+              onClick={() => router.push("/register")}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "#007acc";
+                e.currentTarget.style.textDecoration = "underline";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#B5B5B5";
+                e.currentTarget.style.textDecoration = "none";
+              }}
+            >
+              Crear una cuenta
+            </Text>
+            <Text
+              style={{ cursor: "pointer", color: "#B5B5B5" }}
+              onClick={() => router.push("/forgot-password")}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "#007acc";
+                e.currentTarget.style.textDecoration = "underline";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#B5B5B5";
+                e.currentTarget.style.textDecoration = "none";
+              }}
+            >
+              Recuperar contraseña
+            </Text>
           </div>
         </Paper>
       </Container>

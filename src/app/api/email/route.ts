@@ -24,6 +24,7 @@ export async function POST(req: Request) {
     token: token,
     expires: new Date(Date.now() + 3600 * 1000),
   };
+
   await user.save();
 
   try {
