@@ -7,9 +7,17 @@ export async function GET(req: Request) {
     await connectDB();
 
     const url = new URL(req.url);
+    const id = url.searchParams.get("id");
     const status = url.searchParams.get("status");
 
-    const query = status ? { status } : {};
+    let query = {};
+
+    if (id) {
+      query = { _id: id };
+    } else if (status) {
+      query = { status };
+    }
+
     const events = await Event.find(query);
 
     return NextResponse.json(events);

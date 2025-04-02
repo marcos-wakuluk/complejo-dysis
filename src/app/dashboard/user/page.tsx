@@ -1,90 +1,54 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { Container, Card, Title, Text, Grid, Center } from "@mantine/core";
-import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
-
-interface Ticket {
-  _id: string;
-  event: {
-    name: string;
-  };
-  price: number;
-  qrCode: string;
-  tanda: string;
-}
+import { Container, Center, Text } from "@mantine/core";
+import { IconShoppingCart, IconCalendarEvent, IconQrcode } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import EventosDetail from "./eventos/page";
 
 export default function Usuario() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        const token = Cookies.get("token");
-        if (!token) {
-          throw new Error("No token found");
-        }
-
-        const decoded = jwtDecode<{ userId: string }>(token);
-        const userId = decoded.userId;
-
-        const response = await fetch(`/api/users?id=${userId}`);
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to fetch tickets");
-        }
-
-        const data = await response.json();
-
-        setTickets(data);
-      } catch (error) {
-        console.log(error);
-        setError((error as Error)?.message || "Failed to load tickets");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTickets();
-  }, []);
-
-  if (loading) {
-    return <Center>Loading...</Center>;
-  }
-
-  if (error) {
-    return <Center>{error}</Center>;
-  }
+  const router = useRouter();
 
   return (
-    <Container>
-      <Title order={2} mb="lg">
-        Mis Tickets
-      </Title>
-      <Grid>
-        {tickets.map((ticket) => (
-          <Grid.Col key={ticket._id}>
-            <Card shadow="sm" padding="lg">
-              <Title order={4}>{ticket.event.name}</Title>
-              <Text>Tanda: {ticket.tanda}</Text>
-              <Text>Precio: ${ticket.price}</Text>
-              <Image
-                src={ticket.qrCode}
-                alt="Código QR"
-                layout="responsive"
-                width={500}
-                height={500}
-                style={{ marginTop: "10px" }}
-              />
-            </Card>
-          </Grid.Col>
-        ))}
-      </Grid>
-    </Container>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <Container style={{ flex: 1, overflowY: "auto" }}>
+        <EventosDetail />
+      </Container>
+
+      <div
+        style={{
+          position: "sticky",
+          bottom: 0,
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          padding: "10px 0",
+          borderTop: "1px solid #e0e0e0",
+          backgroundColor: "#fff",
+          zIndex: 1000,
+        }}
+      >
+        <Center
+          style={{ cursor: "pointer", flexDirection: "column" }}
+          onClick={() => router.push("/dashboard/user/mis-compras")}
+        >
+          <IconShoppingCart size={24} />
+          <Text size="xs">Mis Compras</Text>
+        </Center>
+        <Center
+          style={{ cursor: "pointer", flexDirection: "column" }}
+          onClick={() => router.push("/dashboard/user/eventos")}
+        >
+          <IconCalendarEvent size={24} />
+          <Text size="xs">Eventos</Text>
+        </Center>
+        <Center
+          style={{ cursor: "pointer", flexDirection: "column" }}
+          onClick={() => router.push("/dashboard/user/compra-con-qr")}
+        >
+          <IconQrcode size={24} />
+          <Text size="xs">Compra con QR</Text>
+        </Center>
+      </div>
+    </div>
   );
 }

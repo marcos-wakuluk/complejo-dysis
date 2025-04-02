@@ -3,15 +3,33 @@ import { AppShell, Group, Title, Menu, Burger } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+
+interface DecodedToken {
+  [key: string]: unknown;
+}
 
 export function CommonLayout({ children }: Readonly<{ children: ReactNode }>) {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const router = useRouter();
-
+  let userRole;
   const handleLogout = () => {
     Cookies.remove("token");
     router.push("/");
   };
+
+  const user = () => {
+    const token = Cookies.get("token");
+
+    if (token) {
+      const decoded = jwtDecode<DecodedToken>(token);
+
+      userRole = decoded.role;
+    } else {
+      router.push("/");
+    }
+  };
+  user();
 
   return (
     <AppShell padding="md">
@@ -25,11 +43,16 @@ export function CommonLayout({ children }: Readonly<{ children: ReactNode }>) {
               <Burger></Burger>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item onClick={() => {}}>Usuarios</Menu.Item>
-              <Menu.Item onClick={() => {}}>Eventos</Menu.Item>
-              <Menu.Item onClick={() => {}}>Invitados</Menu.Item>
-              <Menu.Item onClick={() => {}}>Inventario</Menu.Item>
-              <Menu.Item onClick={() => {}}>Ventas</Menu.Item>
+              {userRole !== "usuario" && (
+                <>
+                  <Menu.Item onClick={() => {}}>Usuarios</Menu.Item>
+                  <Menu.Item onClick={() => {}}>Eventos</Menu.Item>
+                  <Menu.Item onClick={() => {}}>Invitados</Menu.Item>
+                  <Menu.Item onClick={() => {}}>Inventario</Menu.Item>
+                  <Menu.Item onClick={() => {}}>Ventas</Menu.Item>
+                </>
+              )}
+              <Menu.Item onClick={() => {}}>Mi perfil</Menu.Item>
               <Menu.Item onClick={handleLogout}>Cerrar sesión</Menu.Item>
             </Menu.Dropdown>
           </Menu>
