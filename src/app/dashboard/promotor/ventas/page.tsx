@@ -116,7 +116,7 @@ export default function Ventas() {
                         {getTicketsForEvent(event._id).map((ticket) => (
                           <Table.Tr key={ticket._id}>
                             <Table.Td>
-                              {ticket.client.name} {ticket.client.lastname}
+                              {ticket.client?.name || ""} {ticket.client?.lastname || ""}
                             </Table.Td>
                             <Table.Td>{ticket.price}</Table.Td>
                             <Table.Td>{new Date(ticket.createdAt).toLocaleDateString()}</Table.Td>

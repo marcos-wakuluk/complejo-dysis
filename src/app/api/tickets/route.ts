@@ -10,9 +10,13 @@ export async function GET(req: Request) {
 
     const url = new URL(req.url);
     const userId = url.searchParams.get("userId");
+    const eventId = url.searchParams.get("eventId");
 
     let tickets;
-    if (userId) {
+
+    if (eventId) {
+      tickets = await Ticket.find({ event: eventId }).populate("client", "name lastname dni");
+    } else if (userId) {
       tickets = await Ticket.find({ user: userId }).populate("client", "name lastname dni");
     } else {
       tickets = await Ticket.find().populate("client", "name lastname dni");
