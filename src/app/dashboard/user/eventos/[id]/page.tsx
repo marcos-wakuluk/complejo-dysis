@@ -5,7 +5,7 @@ export default function EventDetail({ params }: { params: Promise<{ id: string }
   const { id } = use(params);
 
   const [event, setEvent] = useState<{
-    starTime: ReactNode;
+    startTime: ReactNode;
     date: ReactNode;
     name: string;
     description: string;
@@ -67,7 +67,7 @@ export default function EventDetail({ params }: { params: Promise<{ id: string }
           <h1>{event.name}</h1>
           <p>{event.description}</p>
           <p>{event.date}</p>
-          <p>{event.starTime}</p>
+          <p>{event.startTime}</p>
           <p>{currentTanda?.price}</p>
         </>
       )}
