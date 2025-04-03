@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
-import { Card, Container, SimpleGrid, Text, Title, Button, Collapse, Table, Center } from "@mantine/core";
+import { Card, Container, SimpleGrid, Text, Button, Collapse, Table, Center } from "@mantine/core";
 
 interface Ticket {
   user: ReactNode;
@@ -13,6 +13,12 @@ interface Evento {
   name: ReactNode;
   id: number;
   tickets: Ticket[];
+}
+
+interface User {
+  name: string;
+  lastname: string;
+  _id: string;
 }
 
 export default function Competencia() {
@@ -47,21 +53,27 @@ export default function Competencia() {
 
       const ticketsData: Ticket[] = await response.json();
 
+      const responseUsers = await fetch(`/api/users?role=promotor`);
+      if (!responseUsers.ok) {
+        throw new Error("Failed to fetch users");
+      }
+
+      const users: User[] = await responseUsers.json();
+      const userMap = users.reduce((acc, { _id, name, lastname }) => {
+        acc[_id] = `${name} ${lastname}`;
+        return acc;
+      }, {} as Record<string, string>);
+
       const ticketsAgrupados = ticketsData.reduce((acc, { user }) => {
         const userKey = String(user);
         if (!acc[userKey]) {
-          acc[userKey] = { user, cantidad: 0 };
+          acc[userKey] = { user: userMap[userKey] || "Desconocido", cantidad: 0 };
         }
         acc[userKey].cantidad += 1;
         return acc;
-      }, {} as Record<string, { user: ReactNode; cantidad: number }>);
+      }, {} as Record<string, { user: string; cantidad: number }>);
 
-      const ticketsPorVendedor = Object.entries(ticketsAgrupados)
-        .map(([user, { cantidad }]) => ({
-          user,
-          cantidad,
-        }))
-        .sort((a, b) => b.cantidad - a.cantidad);
+      const ticketsPorVendedor = Object.values(ticketsAgrupados).sort((a, b) => b.cantidad - a.cantidad);
 
       setTicketsPorEvento(ticketsPorVendedor);
     } catch (error) {
@@ -77,13 +89,6 @@ export default function Competencia() {
 
   return (
     <Container size="xl" style={{ padding: "20px" }}>
-      <Title order={2} mb="lg">
-        Competencia
-      </Title>
-
-      <Title order={3} mt="lg" mb="md">
-        Lista de Eventos
-      </Title>
       <SimpleGrid cols={1} spacing="lg">
         {events.map((event) => (
           <div key={event._id}>
